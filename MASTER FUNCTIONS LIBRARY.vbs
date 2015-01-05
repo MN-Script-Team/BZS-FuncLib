@@ -522,8 +522,8 @@ Function autofill_editbox_from_MAXIS(HH_member_array, panel_read_from, variable_
         Do
           call add_BUSI_to_variable(variable_written_to)
           EMReadScreen BUSI_panel_current, 1, 2, 73
-          If cint(BUSI_panel_current) < cint(BUSI_total) then transmit
-        Loop until cint(BUSI_panel_current) = cint(BUSI_total)
+          If BUSI_panel_current <> BUSI_total then transmit
+        Loop until BUSI_panel_current = BUSI_total
       End if
     Next
   Elseif panel_read_from = "CARS" then '----------------------------------------------------------------------------------------------------CARS
