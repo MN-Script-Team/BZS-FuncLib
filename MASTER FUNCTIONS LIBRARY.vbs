@@ -2510,3 +2510,8 @@ If beta_agency = True then
 		script_repository = "https://raw.githubusercontent.com/MN-Script-Team/DHS-MAXIS-Scripts/RELEASE/Script Files/"
 	End if
 End if
+
+'This script will start the building of an escape string library
+function magic_escape_string(str)
+	magic_escape_string = replace(str,"@","@@") ' This allows use of the @ symbol
+end function
