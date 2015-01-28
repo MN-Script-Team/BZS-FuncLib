@@ -44,6 +44,11 @@ OK = -1			'Value for OK button in dialogs
 
 'BELOW ARE THE ACTUAL FUNCTIONS----------------------------------------------------------------------------------------------------
 
+'This function is used to escape characters so that user input can't break the script
+function magic_escape_string(str)
+	magic_escape_string = replace(str,"@","@@") ' This allows use of the @ symbol
+end function
+
 Function add_ACCI_to_variable(x) 'x represents the name of the variable (example: assets vs. spousal_assets)
   EMReadScreen ACCI_date, 8, 6, 73
   ACCI_date = replace(ACCI_date, " ", "/")
@@ -2182,8 +2187,9 @@ Function worker_county_code_determination(worker_county_code_variable, two_digit
 End function
 
 Function write_bullet_and_variable_in_case_note(bullet, variable)
+	variable = magic_escape_string(variable)
 	variable_array = split(variable, " ")	
-	EMSendKey "* " & bullet & ": "		
+	EMSendKey magic_escape_string("* " & bullet & ": ")		
 	For each bullet in variable_array			
 		EMGetCursor row, col 
 		If (row = 17 and col + (len(bullet)) >= 80) or (row = 4 and col = 3) then		 
@@ -2201,30 +2207,30 @@ Function write_bullet_and_variable_in_case_note(bullet, variable)
 				PF3
 				PF9
 				EMWriteScreen (case_note_header & " (2 of 2)"), 4, 3
-				EMSendKey "<newline>"
-				EMSendKey space(6)
+				EMSendKey magic_escape_string("<newline>")
+				EMSendKey magic_escape_string(space(6))
 			END IF
 		'New stuff... Designed to put the indentation back into the case note so Sylvester Stallone has a cliff from which to hang
 		ELSEIF (((col + len(bullet)) >= 80) AND (row <> 17)) THEN
-			EMSendKey "<newline>"
-			EMSendKey space(6)
+			EMSendKey magic_escape_string("<newline>")
+			EMSendKey magic_escape_string(space(6))
 		END IF
 		'...END of new stuff
 
-		EMSendKey bullet & " "
+		EMSendKey magic_escape_string(bullet & " ")
 		If right(bullet, 1) = ";" then 
-		EMSendKey "<backspace>" & "<backspace>" 
+		EMSendKey magic_escape_string("<backspace>" & "<backspace>") 
 		EMGetCursor row, col 
 			If row = 17 then
 				PF8
-				EMSendKey space(6)
+				EMSendKey magic_escape_string(space(6))
 				Else
-					EMSendKey "<newline>" & space(6)
+					EMSendKey magic_escape_string("<newline>" & space(6))
 				End if
 			End if
 	Next
 
-	EMSendKey "<newline>"
+	EMSendKey magic_escape_string("<newline>")
 	EMGetCursor row, col 
 	If (row = 17 and col + (len(bullet)) >= 80) or (row = 4 and col = 3) then
 		PF8
@@ -2241,7 +2247,7 @@ Function write_bullet_and_variable_in_case_note(bullet, variable)
 			PF3
 			PF9
 			EMWriteScreen (case_note_header & " (2 of 2)"), 4, 3
-			EMSendKey "<newline>"
+			EMSendKey magic_escape_string("<newline>")
 		END IF
 	End if
 End function
@@ -2262,6 +2268,9 @@ Function write_new_line_in_SPEC_MEMO(variable_to_enter)
 End function
 
 Function write_three_columns_in_case_note(col_01_start_point, col_01_variable, col_02_start_point, col_02_variable, col_03_start_point, col_03_variable)
+  col_01_variable = magic_escape_string(col_01_variable)
+  col_02_variable = magic_escape_string(col_02_variable)
+  col_03_variable = magic_escape_string(col_03_variable)
   EMGetCursor row, col 
   If (row = 17 and col + (len(x)) >= 80 + 1 ) or (row = 4 and col = 3) then
     EMSendKey "<PF8>"
@@ -2290,6 +2299,7 @@ FUNCTION write_TIKL_function(variable)
 END FUNCTION
 
 Function write_variable_in_CASE_NOTE(variable)
+  variable = magic_escape_string(variable)
   variable_array = split(variable, " ")
   For each variable in variable_array
     EMGetCursor row, col
@@ -2310,23 +2320,23 @@ Function write_variable_in_CASE_NOTE(variable)
 		PF3
 		PF9
 		EMWriteScreen (case_note_header & " (2 of 2)"), 4, 3
-		EMSendKey "<newline>"
+		EMSendKey magic_escape_string("<newline>")
 		END IF    
 	End if
 
-		EMSendKey variable & " "
+		EMSendKey magic_escape_string(variable & " ")
 		If right(variable, 1) = ";" then 
-		EMSendKey "<backspace>" & "<backspace>" 
+		EMSendKey magic_escape_string("<backspace>" & "<backspace>")
 		EMGetCursor row, col 
 		If row = 17 then
-			EMSendKey "<PF8>"
+			EMSendKey magic_escape_string("<PF8>")
 			EMWaitReady 0, 0
 		Else
-			EMSendKey "<newline>"
+			EMSendKey magic_escape_string("<newline>")
 		End if
 	End if
   Next
-  EMSendKey "<newline>"
+  EMSendKey magic_escape_string("<newline>")
   EMGetCursor row, col 
   If (row = 17 and col + (len(variable)) >= 80) or (row = 4 and col = 3) then
   		EMReadScreen line_one, 40, 4, 3
@@ -2345,30 +2355,31 @@ Function write_variable_in_CASE_NOTE(variable)
 	PF3
 	PF9
 	EMWriteScreen (case_note_header & " (2 of 2)"), 4, 3
-	EMSendKey "<newline>"
+	EMSendKey magic_escape_string("<newline>")
     END IF
 
   End if
 End function
 
 Function write_variable_in_SPEC_MEMO(variable)
+  variable = magic_escape_string(variable)
   variable_array = split(variable, " ")					'Each word becomes its own member of the array called variable_array.
   For each word in variable_array 
     EMGetCursor row, col 									'Needs the cursor in order to know if it's going to "overflow".
     If (row = 17 and col + (len(word)) >= 75) then					'If we're on the last possible row, and the current column + length of the current word goes over the last possible column for writing, then...
-      EMSendKey "<PF8>"										'Send an F8!
+      EMSendKey magic_escape_string("<PF8>")						'Send an F8!
       EMWaitReady 0, 0
     End if
     EMReadScreen max_check, 12, 24, 2							'Checks to see if we've maxed out our possible screens.
     If max_check = "END OF INPUT" then exit for						'Quits the for...next if we've maxed out.
     EMGetCursor row, col 									'Grabs the cursor again.
-    If (row < 17 and col + (len(word)) >= 75) then EMSendKey "<newline>"	'If we're before the last possible row, and the current column + length of the current word goes over the last possible column for writing, then send a newline.
-    EMSendKey word & " "									'Now, after all of the above logic, it can actually send the word, and a space.
+    If (row < 17 and col + (len(word)) >= 75) then EMSendKey magic_escape_string("<newline>")	'If we're before the last possible row, and the current column + length of the current word goes over the last possible column for writing, then send a newline.
+    EMSendKey magic_escape_string(word & " ")									'Now, after all of the above logic, it can actually send the word, and a space.
   Next												'It'll do this for every word in the variable_array.
-  EMSendKey "<newline>"										'Once all of the words are sent, it sends a newline.
+  EMSendKey magic_escape_string("<newline>")						'Once all of the words are sent, it sends a newline.
   EMGetCursor row, col 										'Grabs the cursor yet again.
   If row = 3 and col = 15 then								'If we're at the beginning of a page (meaning we "rolled over" on possible characters on this screen, then...
-    EMSendKey "<PF8>"										'Send an F8!
+    EMSendKey magic_escape_string("<PF8>")						'Send an F8!
     EMWaitReady 0, 0
   End if
 End function
@@ -2511,7 +2522,4 @@ If beta_agency = True then
 	End if
 End if
 
-'This script will start the building of an escape string library
-function magic_escape_string(str)
-	magic_escape_string = replace(str,"@","@@") ' This allows use of the @ symbol
-end function
+
