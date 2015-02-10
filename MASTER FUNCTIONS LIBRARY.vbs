@@ -1077,22 +1077,48 @@ Function autofill_editbox_from_MAXIS(HH_member_array, panel_read_from, variable_
     call navigate_to_screen("stat", "insa")
     EMReadScreen INSA_amt, 1, 2, 78
     If INSA_amt <> 0 then
-      EMReadScreen INSA_name, 38, 10, 38
-      INSA_name = replace(INSA_name, "_", "")
-      INSA_name = split(INSA_name)
-      For each word in INSA_name
-	    If trim(word) <> "" then
-          first_letter_of_word = ucase(left(word, 1))
-          rest_of_word = LCase(right(word, len(word) -1))
-          If len(word) > 4 then
-            variable_written_to = variable_written_to & first_letter_of_word & rest_of_word & " "
-          Else
-            variable_written_to = variable_written_to & word & " "
-          End if
-		End if
-      Next
-      variable_written_to = trim(variable_written_to) & "; "
-    End if
+      'Runs once per INSA screen
+		For i = 1 to INSA_amt step 1
+			insurance_name = ""
+			'Goes to the correct screen
+			EMWriteScreen "0" & i, 20, 79
+			transmit
+			'Gather Insurance Name
+			EMReadScreen INSA_name, 38, 10, 38
+			INSA_name = replace(INSA_name, "_", "")
+			INSA_name = split(INSA_name)
+			For each word in INSA_name
+				If trim(word) <> "" then
+						first_letter_of_word = ucase(left(word, 1))
+						rest_of_word = LCase(right(word, len(word) -1))
+						If len(word) > 4 then
+							insurance_name = insurance_name & first_letter_of_word & rest_of_word & " "
+						Else
+							insurance_name = insurance_name & word & " "
+						End if
+				End if
+			Next
+			'Create a list of members covered by this insurance
+			y = 15 : x = 30
+			insured_count = 0
+			member_list = ""
+			Do
+				EMReadScreen insured_member, 2, y, x
+				If insured_member <> "__" then 
+					if member_list = "" then member_list = insured_member
+					if member_list <> "" then member_list = member_list & ", " & insured_member
+					x = x + 4
+					If x = 70 then
+						x = 30 : y = 16
+					End If
+				End If
+			loop until insured_member = "__"
+			'Retain "variable_written_to" as is while also adding members covered by the insurance policy
+			'Example - "Members: 01, 03, 07 are covered by Blue Cross Blue Shield; " 
+			variable_written_to = variable_written_to & "Members: " & member_list & " are covered by " & trim(insurance_name) & "; "
+		Next
+		'This will loop and add the above statement for all insurance policies listed
+	End if
   Elseif panel_read_from = "JOBS" then '----------------------------------------------------------------------------------------------------JOBS
     For each HH_member in HH_member_array
       call navigate_to_screen("stat", "jobs")
