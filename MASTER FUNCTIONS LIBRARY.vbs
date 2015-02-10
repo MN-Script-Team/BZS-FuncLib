@@ -1044,6 +1044,7 @@ Function autofill_editbox_from_MAXIS(HH_member_array, panel_read_from, variable_
     If INSA_amt <> 0 then
       'Runs once per INSA screen
 		For i = 1 to INSA_amt step 1
+			insurance_name = ""
 			'Goes to the correct screen
 			EMWriteScreen "0" & i, 20, 79
 			transmit
@@ -1069,7 +1070,8 @@ Function autofill_editbox_from_MAXIS(HH_member_array, panel_read_from, variable_
 			Do
 				EMReadScreen insured_member, 2, y, x
 				If insured_member <> "__" then 
-					member_list = member_list & ", " & insured_member
+					if member_list = "" then member_list = insured_member
+					if member_list <> "" then member_list = member_list & ", " & insured_member
 					x = x + 4
 					If x = 70 then
 						x = 30 : y = 16
