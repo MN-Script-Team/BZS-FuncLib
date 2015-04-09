@@ -1626,100 +1626,68 @@ Function maxis_check_function
 	call check_for_MAXIS(True)	'Always true, because the original function always exited, and this needs to match the original function for reverse compatibility reasons.
 End function
 
+
 Function HH_member_custom_dialog(HH_member_array)
-  'THE FOLLOWING DIALOG WILL DYNAMICALLY CHANGE DEPENDING ON THE HH COMP. IT WILL ALLOW A WORKER TO SELECT WHICH HH MEMBERS NEED TO BE INCLUDED IN THE SCRIPT.
-  EMReadScreen HH_member_01, 18, 5, 3                                       'THIS GATHERS THE HH MEMBERS DIRECTLY FROM A MAXIS SCREEN.
-  EMReadScreen HH_member_02, 18, 6, 3
-  EMReadScreen HH_member_03, 18, 7, 3
-  EMReadScreen HH_member_04, 18, 8, 3
-  EMReadScreen HH_member_05, 18, 9, 3
-  EMReadScreen HH_member_06, 18, 10, 3
-  EMReadScreen HH_member_07, 18, 11, 3
-  EMReadScreen HH_member_08, 18, 12, 3
-  EMReadScreen HH_member_09, 18, 13, 3
-  EMReadScreen HH_member_10, 18, 14, 3
-  EMReadScreen HH_member_11, 18, 15, 3
-  EMReadScreen HH_member_12, 18, 16, 3
-  EMReadScreen HH_member_13, 18, 17, 3
-  EMReadScreen HH_member_14, 18, 18, 3
-  EMReadScreen HH_member_15, 18, 19, 3
-  dialog_size_variable = 50                                                 'DEFAULT IS 50, BUT IT CHANGES DEPENDING ON THE AMOUNT OF HH MEMBERS.
-  If HH_member_03 <> "                  " then dialog_size_variable = 65     
-  If HH_member_04 <> "                  " then dialog_size_variable = 80
-  If HH_member_05 <> "                  " then dialog_size_variable = 95
-  If HH_member_06 <> "                  " then dialog_size_variable = 110
-  If HH_member_07 <> "                  " then dialog_size_variable = 125
-  If HH_member_08 <> "                  " then dialog_size_variable = 140
-  If HH_member_09 <> "                  " then dialog_size_variable = 155
-  If HH_member_10 <> "                  " then dialog_size_variable = 170
-  If HH_member_11 <> "                  " then dialog_size_variable = 185
-  If HH_member_12 <> "                  " then dialog_size_variable = 200
-  If HH_member_13 <> "                  " then dialog_size_variable = 215
-  If HH_member_14 <> "                  " then dialog_size_variable = 230
-  If HH_member_15 <> "                  " then dialog_size_variable = 245
-  If HH_member_01 <> "                  " then client_01_check = 1          'ALL CHECKBOXES DEFAULT TO CHECKED, AS USUALLY WE NEED ALL HH MEMBER INFO.
-  If HH_member_02 <> "                  " then client_02_check = 1
-  If HH_member_03 <> "                  " then client_03_check = 1
-  If HH_member_04 <> "                  " then client_04_check = 1
-  If HH_member_05 <> "                  " then client_05_check = 1
-  If HH_member_06 <> "                  " then client_06_check = 1
-  If HH_member_07 <> "                  " then client_07_check = 1
-  If HH_member_08 <> "                  " then client_08_check = 1
-  If HH_member_09 <> "                  " then client_09_check = 1
-  If HH_member_10 <> "                  " then client_10_check = 1
-  If HH_member_11 <> "                  " then client_11_check = 1
-  If HH_member_12 <> "                  " then client_12_check = 1
-  If HH_member_13 <> "                  " then client_13_check = 1
-  If HH_member_14 <> "                  " then client_14_check = 1
-  If HH_member_15 <> "                  " then client_15_check = 1
-  BeginDialog HH_memb_dialog, 0, 0, 191, dialog_size_variable, "HH member dialog"
-    ButtonGroup ButtonPressed
-      OkButton 135, 10, 50, 15
-      CancelButton 135, 30, 50, 15
-    Text 10, 5, 105, 10, "Household members to look at:"
-    If HH_member_01 <> "                  " then CheckBox 10, 20, 120, 10, HH_member_01, client_01_check
-    If HH_member_02 <> "                  " then CheckBox 10, 35, 120, 10, HH_member_02, client_02_check
-    If HH_member_03 <> "                  " then CheckBox 10, 50, 120, 10, HH_member_03, client_03_check
-    If HH_member_04 <> "                  " then CheckBox 10, 65, 120, 10, HH_member_04, client_04_check
-    If HH_member_05 <> "                  " then CheckBox 10, 80, 120, 10, HH_member_05, client_05_check
-    If HH_member_06 <> "                  " then CheckBox 10, 95, 120, 10, HH_member_06, client_06_check
-    If HH_member_07 <> "                  " then CheckBox 10, 110, 120, 10, HH_member_07, client_07_check
-    If HH_member_08 <> "                  " then CheckBox 10, 125, 120, 10, HH_member_08, client_08_check
-    If HH_member_09 <> "                  " then CheckBox 10, 140, 120, 10, HH_member_09, client_09_check
-    If HH_member_10 <> "                  " then CheckBox 10, 155, 120, 10, HH_member_10, client_10_check
-    If HH_member_11 <> "                  " then CheckBox 10, 170, 120, 10, HH_member_11, client_11_check
-    If HH_member_12 <> "                  " then CheckBox 10, 185, 120, 10, HH_member_12, client_12_check
-    If HH_member_13 <> "                  " then CheckBox 10, 200, 120, 10, HH_member_13, client_13_check
-    If HH_member_14 <> "                  " then CheckBox 10, 215, 120, 10, HH_member_14, client_14_check
-    If HH_member_15 <> "                  " then CheckBox 10, 230, 120, 10, HH_member_15, client_15_check
-  EndDialog
-  'NOW IT SHOWS THE DIALOG FROM THE LAST SCREEN
-  Do
-    Dialog HH_memb_dialog
-    If buttonpressed = 0 then stopscript
-    transmit
-    EMReadScreen MAXIS_check, 5, 1, 39
-    IF MAXIS_check <> "MAXIS" and MAXIS_check <> "AXIS " then MsgBox "You do not appear to be in MAXIS. You may have navigated away, or are passworded out. Clear up the issue, and try again."
-  Loop until MAXIS_check = "MAXIS" or MAXIS_check = "AXIS " 
-  'DETERMINING WHICH HH MEMBERS TO LOOK AT
-  If client_01_check = 1 then HH_member_array = HH_member_array & left(HH_member_01, 2) & " "
-  If client_02_check = 1 then HH_member_array = HH_member_array & left(HH_member_02, 2) & " "
-  If client_03_check = 1 then HH_member_array = HH_member_array & left(HH_member_03, 2) & " "
-  If client_04_check = 1 then HH_member_array = HH_member_array & left(HH_member_04, 2) & " "
-  If client_05_check = 1 then HH_member_array = HH_member_array & left(HH_member_05, 2) & " "
-  If client_06_check = 1 then HH_member_array = HH_member_array & left(HH_member_06, 2) & " "
-  If client_07_check = 1 then HH_member_array = HH_member_array & left(HH_member_07, 2) & " "
-  If client_08_check = 1 then HH_member_array = HH_member_array & left(HH_member_08, 2) & " "
-  If client_09_check = 1 then HH_member_array = HH_member_array & left(HH_member_09, 2) & " "
-  If client_10_check = 1 then HH_member_array = HH_member_array & left(HH_member_10, 2) & " "
-  If client_11_check = 1 then HH_member_array = HH_member_array & left(HH_member_11, 2) & " "
-  If client_12_check = 1 then HH_member_array = HH_member_array & left(HH_member_12, 2) & " "
-  If client_13_check = 1 then HH_member_array = HH_member_array & left(HH_member_13, 2) & " "
-  If client_14_check = 1 then HH_member_array = HH_member_array & left(HH_member_14, 2) & " "
-  If client_15_check = 1 then HH_member_array = HH_member_array & left(HH_member_15, 2) & " "
-  HH_member_array = trim(HH_member_array)
-  HH_member_array = split(HH_member_array, " ")
+
+CALL Navigate_to_MAXIS_screen("STAT", "MEMB")   'navigating to stat memb to gather the ref number and name. 
+
+DO								'reads the reference number, last name, first name, and then puts it into a single string then into the array
+	EMReadscreen ref_nbr, 3, 4, 33
+	EMReadscreen last_name, 5, 6, 30
+	EMReadscreen first_name, 7, 6, 63
+	EMReadscreen Mid_intial, 1, 6, 79
+	last_name = replace(last_name, "_", "") & " "
+	first_name = replace(first_name, "_", "") & " "
+	mid_initial = replace(mid_initial, "_", "")
+	client_string = ref_nbr & last_name & first_name & mid_intial
+	client_array = client_array & client_string & "|"
+	transmit
+	Emreadscreen edit_check, 7, 24, 2	
+LOOP until edit_check = "ENTER A"			'the script will continue to transmit through memb until it reaches the last page and finds the ENTER A edit on the bottom row. 
+
+client_array = TRIM(client_array)
+test_array = split(client_array, "|")
+total_clients = Ubound(test_array)			'setting the upper bound for how many spaces to use from the array
+
+DIM all_client_array()
+ReDim all_clients_array(total_clients, 1)
+
+FOR x = 0 to total_clients				'using a dummy array to build in the autofilled check boxes into the array used for the dialog.
+	Interim_array = split(client_array, "|")
+	all_clients_array(x, 0) = Interim_array(x)
+	all_clients_array(x, 1) = 1
+NEXT
+
+BEGINDIALOG HH_memb_dialog, 0, 0, 191, (35 + (total_clients * 15)), "HH Member Dialog"   'Creates the dynamic dialog. The height will change based on the number of clients it finds.
+	Text 10, 5, 105, 10, "Household members to look at:"						
+	FOR i = 0 to total_clients										'For each person/string in the first level of the array the script will create a checkbox for them with height dependant on their order read
+		IF all_clients_array(i, 0) <> "" THEN checkbox 10, (20 + (i * 15)), 120, 10, all_clients_array(i, 0), all_clients_array(i, 1)  'Ignores and blank scanned in persons/strings to avoid a blank checkbox
+	NEXT
+	ButtonGroup ButtonPressed
+	OkButton 135, 10, 50, 15
+	CancelButton 135, 30, 50, 15
+ENDDIALOG
+													'runs the dialog that has been dynamically created. Streamlined with new functions.
+Dialog HH_memb_dialog
+If buttonpressed = 0 then stopscript
+check_for_maxis
+
+HH_member_array = ""					
+
+FOR i = 0 to total_clients
+	IF all_clients_array(i, 0) <> "" THEN 						'creates the final array to be used by other scripts. 
+		IF all_clients_array(i, 1) = 1 THEN						'if the person/string has been checked on the dialog then the reference number portion (left 2) will be added to new HH_member_array
+			'msgbox all_clients_
+			HH_member_array = HH_member_array & left(all_clients_array(i, 0), 2) & " "
+		END IF
+	END IF
+NEXT
+
+HH_member_array = TRIM(HH_member_array)							'Cleaning up array for ease of use.
+HH_member_array = SPLIT(HH_member_array, " ")
+
 End function
+
 
 function log_usage_stats_without_closing 'For use when logging usage stats but then running another script, i.e. DAIL scrubber
 	stop_time = timer
