@@ -1770,6 +1770,20 @@ Function end_excel_and_script
   stopscript
 End function
 
+
+FUNCTION find_MAXIS_worker_number(x_number)
+        EMReadScreen SELF_check, 4, 2, 50                        		'Does this to check to see if we're on SELF screen
+        IF SELF_check = "SELF" THEN                       			'if on the self screen then x # is read from coordinates                                                   
+           	EMReadScreen x_number, 7, 22, 8
+       	ELSE
+              	Call find_variable("PW: ", x_number, 7)                'if not, then the PW: variable is searched to find the worker #
+                If isnumeric(MAXIS_worker_number) = true then            'making sure that the worker # is a number
+                       	MAXIS_worker_number = x_number                                                    'delcares the MAXIS_worker_number to be the x_number
+                End if     
+       	END if
+END FUNCTION
+
+
 Function find_variable(x, y, z) 'x is string, y is variable, z is length of new variable
   row = 1
   col = 1
