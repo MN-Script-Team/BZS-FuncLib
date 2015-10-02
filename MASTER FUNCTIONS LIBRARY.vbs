@@ -2014,16 +2014,9 @@ FUNCTION MAXIS_footer_finder(MAXIS_footer_month, MAXIS_footer_year)'Grabbing the
 		EMReadScreen MAXIS_footer_month, 2, 20, 43
 		EMReadScreen MAXIS_footer_year, 2, 20, 46
 	ELSE
-	Call find_variable("Month: ", MAXIS_footer_month, 2)
-		If isnumeric(MAXIS_footer_month) = true then 	'checking to see if a footer month 'number' is present 
-			footer_month = MAXIS_footer_month	
-			call find_variable("Month: " & footer_month & " ", MAXIS_footer_year, 2)
-			If isnumeric(MAXIS_footer_year) = true then footer_year = MAXIS_footer_year 'checking to see if a footer year 'number' is present
-		Else 'If we don’t have one found, we’re going to assign the current month/year.
-			MAXIS_footer_month = DatePart("m", date)   'Datepart delivers the month number to the variable
-			If len(MAXIS_footer_month) = 1 then MAXIS_footer_month = "0" & MAXIS_footer_month   'If it’s a single digit month, add a zero
-			MAXIS_footer_year = right(DatePart("yyyy", date), 2)	'We only need the right two characters of the year for MAXIS
-		End if
+		Call find_variable("Month: ", MAXIS_footer, 5)
+		MAXIS_footer_month = left(MAXIS_footer, 2)
+		MAXIS_footer_year = right(MAXIS_footer, 2)
 	End if
 END FUNCTION
 
