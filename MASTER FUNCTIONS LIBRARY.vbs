@@ -1432,6 +1432,21 @@ Function autofill_editbox_from_MAXIS(HH_member_array, panel_read_from, variable_
       End if
       SHEL_expense = ""
     Next
+   Elseif panel_read_from = "SWKR" then '---------------------------------------------------------------------------------------------------SWKR
+    EMReadScreen SWKR_name, 35, 6, 32
+    SWKR_name = replace(AREP_name, "_", "")
+    SWKR_name = split(AREP_name)
+    For each word in SWKR_name
+      If word <> "" then
+        first_letter_of_word = ucase(left(word, 1))
+        rest_of_word = LCase(right(word, len(word) -1))
+        If len(word) > 2 then
+          variable_written_to = variable_written_to & first_letter_of_word & rest_of_word & " "
+        Else
+          variable_written_to = variable_written_to & word & " "
+        End if
+      End if
+    Next
   Elseif panel_read_from = "STWK" then '----------------------------------------------------------------------------------------------------STWK
 	For each HH_member in HH_member_array
       EMWriteScreen HH_member, 20, 76
@@ -1736,36 +1751,6 @@ FUNCTION create_MAXIS_friendly_phone_number(phone_number_variable, screen_row, s
 	EMWriteScreen right(phone_number_variable, 4), screen_row, screen_col + 12	'writes in right 4 digits of the phone number in variable
 END FUNCTION
 
-Function create_panel_if_nonexistent()
-	EMWriteScreen reference_number , 20, 76
-	transmit
-	EMReadScreen case_panel_check, 44, 24, 2
-	If case_panel_check = "REFERENCE NUMBER IS NOT VALID FOR THIS PANEL" then
-		EMReadScreen quantity_of_screens, 1, 2, 78
-		If quantity_of_screens <> "0" then
-			PF9
-		ElseIf quantity_of_screens = "0" then
-			EMWriteScreen "__", 20, 76
-			EMWriteScreen "NN", 20, 79
-			Transmit
-		End If
-	ElseIf case_panel_check <> "REFERENCE NUMBER IS NOT VALID FOR THIS PANEL" then
-		EMReadScreen error_scan, 80, 24, 1
-		error_scan = trim(error_scan)
-		EMReadScreen quantity_of_screens, 1, 2, 78
-		If error_scan = "" and quantity_of_screens <> "0" then
-			PF9
-		ElseIf error_scan <> "" and quantity_of_screens <> "0" then
-			'FIX ERROR HERE
-			msgbox("Error: " & error_scan)
-		ElseIf error_scan <> "" and quantity_of_screens = "0" then
-			EMWriteScreen reference_number, 20, 76
-			EMWriteScreen "NN", 20, 79
-			Transmit
-		End If
-	End If
-End Function
-
 Function end_excel_and_script
   objExcel.Workbooks.Close
   objExcel.quit
@@ -2029,6 +2014,7 @@ FUNCTION MAXIS_dialog_navigation
 	If ButtonPressed = REVW_button then call navigate_to_screen("stat", "REVW")
 	If ButtonPressed = SCHL_button then call navigate_to_screen("stat", "SCHL")
 	If ButtonPressed = SECU_button then call navigate_to_screen("stat", "SECU")
+	If ButtonPressed = SPON_button then call navigate_to_screen("stat", "SPON")
 	If ButtonPressed = STIN_button then call navigate_to_screen("stat", "STIN")
 	If ButtonPressed = STEC_button then call navigate_to_screen("stat", "STEC")
 	If ButtonPressed = STWK_button then call navigate_to_screen("stat", "STWK")
