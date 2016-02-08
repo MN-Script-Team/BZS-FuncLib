@@ -2671,46 +2671,6 @@ FUNCTION start_a_blank_CASE_NOTE
 	Loop until (mode_check = "A" or mode_check = "E")
 END FUNCTION
 
-function stat_navigation
-  EMReadScreen STAT_check, 4, 20, 21
-  If STAT_check = "STAT" then
-    If ButtonPressed = prev_panel_button then 
-      EMReadScreen current_panel, 1, 2, 73
-      EMReadScreen amount_of_panels, 1, 2, 78
-      If current_panel = 1 then new_panel = current_panel
-      If current_panel > 1 then new_panel = current_panel - 1
-      If amount_of_panels > 1 then EMWriteScreen "0" & new_panel, 20, 79
-    End if
-    If ButtonPressed = next_panel_button then 
-      EMReadScreen current_panel, 1, 2, 73
-      EMReadScreen amount_of_panels, 1, 2, 78
-      If current_panel < amount_of_panels then new_panel = current_panel + 1
-      If current_panel = amount_of_panels then new_panel = current_panel
-      If amount_of_panels > 1 then EMWriteScreen "0" & new_panel, 20, 79
-    End if
-    If ButtonPressed = prev_memb_button then 
-      HH_memb_row = HH_memb_row - 1
-      EMReadScreen prev_HH_memb, 2, HH_memb_row, 3
-      If isnumeric(prev_HH_memb) = False then
-        HH_memb_row = HH_memb_row + 1
-      Else
-        EMWriteScreen prev_HH_memb, 20, 76
-        EMWriteScreen "01", 20, 79
-      End if
-    End if
-    If ButtonPressed = next_memb_button then 
-      HH_memb_row = HH_memb_row + 1
-      EMReadScreen next_HH_memb, 2, HH_memb_row, 3
-      If isnumeric(next_HH_memb) = False then
-        HH_memb_row = HH_memb_row + 1
-      Else
-        EMWriteScreen next_HH_memb, 20, 76
-        EMWriteScreen "01", 20, 79
-      End if
-    End if
-  End if
-End function
-
 Function step_through_handling 'This function will introduce "warning screens" before each transmit, which is very helpful for testing new scripts
 	'To use this function, simply replace the "Execute text_from_the_other_script" line with:
 	'Execute replace(text_from_the_other_script, "EMWaitReady 0, 0", "step_through_handling")
