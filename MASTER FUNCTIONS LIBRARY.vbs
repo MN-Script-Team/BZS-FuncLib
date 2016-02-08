@@ -1781,12 +1781,6 @@ Function create_panel_if_nonexistent()  'THIS FUNCTION IS BUILT INTO A BUNCH OF 
 	End If
 End Function
 
-Function end_excel_and_script
-  objExcel.Workbooks.Close
-  objExcel.quit
-  stopscript
-End function
-
 Function excel_open(file_url, visible_status, alerts_status, ObjExcel, objWorkbook)
 	Set objExcel = CreateObject("Excel.Application") 'Allows a user to perform functions within Microsoft Excel
 	objExcel.Visible = visible_status
