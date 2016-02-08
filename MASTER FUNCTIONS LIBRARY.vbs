@@ -3412,10 +3412,6 @@ Function write_editbox_in_case_note(bullet, variable, length_of_indent) 'DEPRECI
 	call write_bullet_and_variable_in_case_note(bullet, variable)
 End function
 
-Function write_new_line_in_SPEC_MEMO(variable_to_enter)					'DEPRECIATED AS OF 01/20/2015. 
-	call write_variable_in_SPEC_MEMO(variable_to_enter)
-End function
-
 'write_panel_to_MAXIS comes from Krabappel
 Function write_panel_to_MAXIS_ABPS(abps_supp_coop,abps_gc_status)
 	call navigate_to_MAXIS_screen("STAT","PARE")							'Starts by creating an array of all the kids on PARE
