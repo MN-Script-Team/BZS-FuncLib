@@ -3412,10 +3412,6 @@ Function write_editbox_in_case_note(bullet, variable, length_of_indent) 'DEPRECI
 	call write_bullet_and_variable_in_case_note(bullet, variable)
 End function
 
-Function write_new_line_in_case_note(variable)							'DEPRECIATED AS OF 01/20/2015. 
-	call write_variable_in_CASE_NOTE(variable)
-End function
-
 Function write_new_line_in_SPEC_MEMO(variable_to_enter)					'DEPRECIATED AS OF 01/20/2015. 
 	call write_variable_in_SPEC_MEMO(variable_to_enter)
 End function
@@ -5476,7 +5472,6 @@ FUNCTION write_panel_to_MAXIS_WREG(wreg_fs_pwe, wreg_fset_status, wreg_defer_fs,
 	IF wreg_num_sanctions <> "" THEN EMWriteScreen wreg_num_sanctions, 11, 50
 	EMWriteScreen wreg_abawd_status, 13, 50
 	EMWriteScreen wreg_ga_basis, 15, 50
-
 	transmit
 END FUNCTION
 
