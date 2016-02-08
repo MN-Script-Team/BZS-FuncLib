@@ -3400,10 +3400,6 @@ Function ERRR_screen_check 'Checks for error prone cases				'DEPRECIATED AS OF 0
 	If ERRR_check = "ERRR" then transmit
 End Function
 
-Function maxis_check_function											'DEPRECIATED AS OF 01/20/2015.
-	call check_for_MAXIS(True)	'Always true, because the original function always exited, and this needs to match the original function for reverse compatibility reasons.
-End function
-
 Function navigate_to_MAXIS_screen(MAXIS_function, MAXIS_command)										'DEPRECIATED AS OF 03/09/2015.
 	call navigate_to_MAXIS_screen(MAXIS_function, MAXIS_command)
 End function
