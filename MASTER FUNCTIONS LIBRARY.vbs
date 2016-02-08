@@ -3400,10 +3400,6 @@ Function ERRR_screen_check 'Checks for error prone cases				'DEPRECIATED AS OF 0
 	If ERRR_check = "ERRR" then transmit
 End Function
 
-Function navigate_to_MAXIS_screen(MAXIS_function, MAXIS_command)										'DEPRECIATED AS OF 03/09/2015.
-	call navigate_to_MAXIS_screen(MAXIS_function, MAXIS_command)
-End function
-
 Function write_editbox_in_case_note(bullet, variable, length_of_indent) 'DEPRECIATED AS OF 01/20/2015. 
 	call write_bullet_and_variable_in_case_note(bullet, variable)
 End function
