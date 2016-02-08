@@ -2246,14 +2246,6 @@ Function panel_navigation_next
   If amount_of_panels > 1 then EMWriteScreen "0" & new_panel, 20, 79
 End function
 
-Function panel_navigation_prev
-  EMReadScreen current_panel, 1, 2, 73
-  EMReadScreen amount_of_panels, 1, 2, 78
-  If current_panel = 1 then new_panel = current_panel
-  If current_panel > 1 then new_panel = current_panel - 1
-  If amount_of_panels > 1 then EMWriteScreen "0" & new_panel, 20, 79
-End function
-
 Function PF1
   EMSendKey "<PF1>"
   EMWaitReady 0, 0
