@@ -1009,7 +1009,7 @@ Function autofill_editbox_from_MAXIS(HH_member_array, panel_read_from, variable_
     Next
   Elseif panel_read_from = "FMED" then '----------------------------------------------------------------------------------------------------FMED
 	For each HH_member in HH_member_array
-	  ERRR_screen_check
+	  Call check_for_MAXIS(False)
       EMWriteScreen HH_member, 20, 76
       EMWriteScreen "01", 20, 79
       transmit
@@ -1635,7 +1635,7 @@ end function
 
 Function create_array_of_all_active_x_numbers_in_county(array_name, county_code)
 	'Getting to REPT/USER
-	call navigate_to_screen("rept", "user")
+	call navigate_to_MAXIS_screen("rept", "user")
 
 	'Hitting PF5 to force sorting, which allows directly selecting a county
 	PF5
@@ -1715,7 +1715,7 @@ FUNCTION create_MAXIS_friendly_phone_number(phone_number_variable, screen_row, s
 	EMWriteScreen right(phone_number_variable, 4), screen_row, screen_col + 12	'writes in right 4 digits of the phone number in variable
 END FUNCTION
 
-Function create_panel_if_nonexistent()
+Function create_panel_if_nonexistent()  'THIS FUNCTION IS BUILT INTO A BUNCH OF FUNCTIONS, BUT NOT SUPPORTED FULLY. USE IN SCRIPTS WITH CAUTION.
 	EMWriteScreen reference_number , 20, 76
 	transmit
 	EMReadScreen case_panel_check, 44, 24, 2
@@ -1744,12 +1744,6 @@ Function create_panel_if_nonexistent()
 		End If
 	End If
 End Function
-
-Function end_excel_and_script
-  objExcel.Workbooks.Close
-  objExcel.quit
-  stopscript
-End function
 
 Function excel_open(file_url, visible_status, alerts_status, ObjExcel, objWorkbook)
 	Set objExcel = CreateObject("Excel.Application") 'Allows a user to perform functions within Microsoft Excel
@@ -1807,7 +1801,7 @@ End function
 
 Function MAXIS_background_check
 	Do
-		call navigate_to_screen("STAT", "SUMM")
+		call navigate_to_MAXIS_screen("STAT", "SUMM")
 		EMReadScreen SELF_check, 4, 2, 50
 		If SELF_check = "SELF" then
 			PF3
@@ -1963,60 +1957,60 @@ FUNCTION MAXIS_dialog_navigation
 	End if
 
 	'This part takes care of remaining navigation buttons, designed to go to a single panel.
-	If ButtonPressed = ABPS_button then call navigate_to_screen("stat", "ABPS")
-	If ButtonPressed = ACCI_button then call navigate_to_screen("stat", "ACCI")
-	If ButtonPressed = ACCT_button then call navigate_to_screen("stat", "ACCT")
-	If ButtonPressed = ADDR_button then call navigate_to_screen("stat", "ADDR")
-	If ButtonPressed = ALTP_button then call navigate_to_screen("stat", "ALTP")
-	If ButtonPressed = AREP_button then call navigate_to_screen("stat", "AREP")
-	If ButtonPressed = BILS_button then call navigate_to_screen("stat", "BILS")
-	If ButtonPressed = BUSI_button then call navigate_to_screen("stat", "BUSI")
-	If ButtonPressed = CARS_button then call navigate_to_screen("stat", "CARS")
-	If ButtonPressed = CASH_button then call navigate_to_screen("stat", "CASH")
-	If ButtonPressed = COEX_button then call navigate_to_screen("stat", "COEX")
-	If ButtonPressed = DCEX_button then call navigate_to_screen("stat", "DCEX")
-	If ButtonPressed = DIET_button then call navigate_to_screen("stat", "DIET")
-	If ButtonPressed = DISA_button then call navigate_to_screen("stat", "DISA")
-	If ButtonPressed = EATS_button then call navigate_to_screen("stat", "EATS")
-	If ButtonPressed = ELIG_DWP_button then call navigate_to_screen("elig", "DWP_")
-	If ButtonPressed = ELIG_FS_button then call navigate_to_screen("elig", "FS__")
-	If ButtonPressed = ELIG_GA_button then call navigate_to_screen("elig", "GA__")
-	If ButtonPressed = ELIG_HC_button then call navigate_to_screen("elig", "HC__")
-	If ButtonPressed = ELIG_MFIP_button then call navigate_to_screen("elig", "MFIP")
-	If ButtonPressed = ELIG_MSA_button then call navigate_to_screen("elig", "MSA_")
-	If ButtonPressed = ELIG_WB_button then call navigate_to_screen("elig", "WB__")
-	If ButtonPressed = ELIG_GRH_button then call navigate_to_screen("elig", "GRH_")
-	If ButtonPressed = FACI_button then call navigate_to_screen("stat", "FACI")
-	If ButtonPressed = FMED_button then call navigate_to_screen("stat", "FMED")
-	If ButtonPressed = HCMI_button then call navigate_to_screen("stat", "HCMI")
-	If ButtonPressed = HCRE_button then call navigate_to_screen("stat", "HCRE")
-	If ButtonPressed = HEST_button then call navigate_to_screen("stat", "HEST")
-	If ButtonPressed = IMIG_button then call navigate_to_screen("stat", "IMIG")
-	If ButtonPressed = INSA_button then call navigate_to_screen("stat", "INSA")
-	If ButtonPressed = JOBS_button then call navigate_to_screen("stat", "JOBS")
-	If ButtonPressed = MEDI_button then call navigate_to_screen("stat", "MEDI")
-	If ButtonPressed = MEMB_button then call navigate_to_screen("stat", "MEMB")
-	If ButtonPressed = MEMI_button then call navigate_to_screen("stat", "MEMI")
-	If ButtonPressed = MONT_button then call navigate_to_screen("stat", "MONT")
-	If ButtonPressed = OTHR_button then call navigate_to_screen("stat", "OTHR")
-	If ButtonPressed = PBEN_button then call navigate_to_screen("stat", "PBEN")
-	If ButtonPressed = PDED_button then call navigate_to_screen("stat", "PDED")
-	If ButtonPressed = PREG_button then call navigate_to_screen("stat", "PREG")
-	If ButtonPressed = PROG_button then call navigate_to_screen("stat", "PROG")
-	If ButtonPressed = RBIC_button then call navigate_to_screen("stat", "RBIC")
-	If ButtonPressed = REST_button then call navigate_to_screen("stat", "REST")
-	If ButtonPressed = REVW_button then call navigate_to_screen("stat", "REVW")
-	If ButtonPressed = SCHL_button then call navigate_to_screen("stat", "SCHL")
-	If ButtonPressed = SECU_button then call navigate_to_screen("stat", "SECU")
-	If ButtonPressed = SPON_button then call navigate_to_screen("stat", "SPON")
-	If ButtonPressed = STIN_button then call navigate_to_screen("stat", "STIN")
-	If ButtonPressed = STEC_button then call navigate_to_screen("stat", "STEC")
-	If ButtonPressed = STWK_button then call navigate_to_screen("stat", "STWK")
-	If ButtonPressed = SHEL_button then call navigate_to_screen("stat", "SHEL")
-	If ButtonPressed = SWKR_button then call navigate_to_screen("stat", "SWKR")
-	If ButtonPressed = TRAN_button then call navigate_to_screen("stat", "TRAN")
-	If ButtonPressed = TYPE_button then call navigate_to_screen("stat", "TYPE")
-	If ButtonPressed = UNEA_button then call navigate_to_screen("stat", "UNEA")
+	If ButtonPressed = ABPS_button then call navigate_to_MAXIS_screen("stat", "ABPS")
+	If ButtonPressed = ACCI_button then call navigate_to_MAXIS_screen("stat", "ACCI")
+	If ButtonPressed = ACCT_button then call navigate_to_MAXIS_screen("stat", "ACCT")
+	If ButtonPressed = ADDR_button then call navigate_to_MAXIS_screen("stat", "ADDR")
+	If ButtonPressed = ALTP_button then call navigate_to_MAXIS_screen("stat", "ALTP")
+	If ButtonPressed = AREP_button then call navigate_to_MAXIS_screen("stat", "AREP")
+	If ButtonPressed = BILS_button then call navigate_to_MAXIS_screen("stat", "BILS")
+	If ButtonPressed = BUSI_button then call navigate_to_MAXIS_screen("stat", "BUSI")
+	If ButtonPressed = CARS_button then call navigate_to_MAXIS_screen("stat", "CARS")
+	If ButtonPressed = CASH_button then call navigate_to_MAXIS_screen("stat", "CASH")
+	If ButtonPressed = COEX_button then call navigate_to_MAXIS_screen("stat", "COEX")
+	If ButtonPressed = DCEX_button then call navigate_to_MAXIS_screen("stat", "DCEX")
+	If ButtonPressed = DIET_button then call navigate_to_MAXIS_screen("stat", "DIET")
+	If ButtonPressed = DISA_button then call navigate_to_MAXIS_screen("stat", "DISA")
+	If ButtonPressed = EATS_button then call navigate_to_MAXIS_screen("stat", "EATS")
+	If ButtonPressed = ELIG_DWP_button then call navigate_to_MAXIS_screen("elig", "DWP_")
+	If ButtonPressed = ELIG_FS_button then call navigate_to_MAXIS_screen("elig", "FS__")
+	If ButtonPressed = ELIG_GA_button then call navigate_to_MAXIS_screen("elig", "GA__")
+	If ButtonPressed = ELIG_HC_button then call navigate_to_MAXIS_screen("elig", "HC__")
+	If ButtonPressed = ELIG_MFIP_button then call navigate_to_MAXIS_screen("elig", "MFIP")
+	If ButtonPressed = ELIG_MSA_button then call navigate_to_MAXIS_screen("elig", "MSA_")
+	If ButtonPressed = ELIG_WB_button then call navigate_to_MAXIS_screen("elig", "WB__")
+	If ButtonPressed = ELIG_GRH_button then call navigate_to_MAXIS_screen("elig", "GRH_")
+	If ButtonPressed = FACI_button then call navigate_to_MAXIS_screen("stat", "FACI")
+	If ButtonPressed = FMED_button then call navigate_to_MAXIS_screen("stat", "FMED")
+	If ButtonPressed = HCMI_button then call navigate_to_MAXIS_screen("stat", "HCMI")
+	If ButtonPressed = HCRE_button then call navigate_to_MAXIS_screen("stat", "HCRE")
+	If ButtonPressed = HEST_button then call navigate_to_MAXIS_screen("stat", "HEST")
+	If ButtonPressed = IMIG_button then call navigate_to_MAXIS_screen("stat", "IMIG")
+	If ButtonPressed = INSA_button then call navigate_to_MAXIS_screen("stat", "INSA")
+	If ButtonPressed = JOBS_button then call navigate_to_MAXIS_screen("stat", "JOBS")
+	If ButtonPressed = MEDI_button then call navigate_to_MAXIS_screen("stat", "MEDI")
+	If ButtonPressed = MEMB_button then call navigate_to_MAXIS_screen("stat", "MEMB")
+	If ButtonPressed = MEMI_button then call navigate_to_MAXIS_screen("stat", "MEMI")
+	If ButtonPressed = MONT_button then call navigate_to_MAXIS_screen("stat", "MONT")
+	If ButtonPressed = OTHR_button then call navigate_to_MAXIS_screen("stat", "OTHR")
+	If ButtonPressed = PBEN_button then call navigate_to_MAXIS_screen("stat", "PBEN")
+	If ButtonPressed = PDED_button then call navigate_to_MAXIS_screen("stat", "PDED")
+	If ButtonPressed = PREG_button then call navigate_to_MAXIS_screen("stat", "PREG")
+	If ButtonPressed = PROG_button then call navigate_to_MAXIS_screen("stat", "PROG")
+	If ButtonPressed = RBIC_button then call navigate_to_MAXIS_screen("stat", "RBIC")
+	If ButtonPressed = REST_button then call navigate_to_MAXIS_screen("stat", "REST")
+	If ButtonPressed = REVW_button then call navigate_to_MAXIS_screen("stat", "REVW")
+	If ButtonPressed = SCHL_button then call navigate_to_MAXIS_screen("stat", "SCHL")
+	If ButtonPressed = SECU_button then call navigate_to_MAXIS_screen("stat", "SECU")
+	If ButtonPressed = SPON_button then call navigate_to_MAXIS_screen("stat", "SPON")
+	If ButtonPressed = STIN_button then call navigate_to_MAXIS_screen("stat", "STIN")
+	If ButtonPressed = STEC_button then call navigate_to_MAXIS_screen("stat", "STEC")
+	If ButtonPressed = STWK_button then call navigate_to_MAXIS_screen("stat", "STWK")
+	If ButtonPressed = SHEL_button then call navigate_to_MAXIS_screen("stat", "SHEL")
+	If ButtonPressed = SWKR_button then call navigate_to_MAXIS_screen("stat", "SWKR")
+	If ButtonPressed = TRAN_button then call navigate_to_MAXIS_screen("stat", "TRAN")
+	If ButtonPressed = TYPE_button then call navigate_to_MAXIS_screen("stat", "TYPE")
+	If ButtonPressed = UNEA_button then call navigate_to_MAXIS_screen("stat", "UNEA")
 END FUNCTION
 
 FUNCTION MAXIS_footer_finder(MAXIS_footer_month, MAXIS_footer_year)'Grabbing the footer month/year
@@ -2031,28 +2025,6 @@ FUNCTION MAXIS_footer_finder(MAXIS_footer_month, MAXIS_footer_year)'Grabbing the
 		MAXIS_footer_year = right(MAXIS_footer, 2)
 	End if
 END FUNCTION
-
-Function memb_navigation_next
-  HH_memb_row = HH_memb_row + 1
-  EMReadScreen next_HH_memb, 2, HH_memb_row, 3
-  If isnumeric(next_HH_memb) = False then
-    HH_memb_row = HH_memb_row + 1
-  Else
-    EMWriteScreen next_HH_memb, 20, 76
-    EMWriteScreen "01", 20, 79
-  End if
-End function
-
-Function memb_navigation_prev
-  HH_memb_row = HH_memb_row - 1
-  EMReadScreen prev_HH_memb, 2, HH_memb_row, 3
-  If isnumeric(prev_HH_memb) = False then
-    HH_memb_row = HH_memb_row + 1
-  Else
-    EMWriteScreen prev_HH_memb, 20, 76
-    EMWriteScreen "01", 20, 79
-  End if
-End function
 
 Function MMIS_RKEY_finder
   'Now we use a Do Loop to get to the start screen for MMIS.
@@ -2145,61 +2117,6 @@ Function navigate_to_PRISM_screen(x) 'x is the name of the screen
   EMWaitReady 0, 0
 End function
 
-function navigation_buttons 'this works by calling the navigation_buttons function when the buttonpressed isn't -1
-  If ButtonPressed = ABPS_button then call navigate_to_screen("stat", "ABPS")
-  If ButtonPressed = ACCI_button then call navigate_to_screen("stat", "ACCI")
-  If ButtonPressed = ACCT_button then call navigate_to_screen("stat", "ACCT")
-  If ButtonPressed = ADDR_button then call navigate_to_screen("stat", "ADDR")
-  If ButtonPressed = ALTP_button then call navigate_to_screen("stat", "ALTP")
-  If ButtonPressed = AREP_button then call navigate_to_screen("stat", "AREP")
-  If ButtonPressed = BILS_button then call navigate_to_screen("stat", "BILS")
-  If ButtonPressed = BUSI_button then call navigate_to_screen("stat", "BUSI")
-  If ButtonPressed = CARS_button then call navigate_to_screen("stat", "CARS")
-  If ButtonPressed = CASH_button then call navigate_to_screen("stat", "CASH")
-  If ButtonPressed = COEX_button then call navigate_to_screen("stat", "COEX")
-  If ButtonPressed = DCEX_button then call navigate_to_screen("stat", "DCEX")
-  If ButtonPressed = DIET_button then call navigate_to_screen("stat", "DIET")
-  If ButtonPressed = DISA_button then call navigate_to_screen("stat", "DISA")
-  If ButtonPressed = EATS_button then call navigate_to_screen("stat", "EATS")
-  If ButtonPressed = ELIG_DWP_button then call navigate_to_screen("elig", "DWP_")
-  If ButtonPressed = ELIG_FS_button then call navigate_to_screen("elig", "FS__")
-  If ButtonPressed = ELIG_GA_button then call navigate_to_screen("elig", "GA__")
-  If ButtonPressed = ELIG_HC_button then call navigate_to_screen("elig", "HC__")
-  If ButtonPressed = ELIG_MFIP_button then call navigate_to_screen("elig", "MFIP")
-  If ButtonPressed = ELIG_MSA_button then call navigate_to_screen("elig", "MSA_")
-  If ButtonPressed = ELIG_WB_button then call navigate_to_screen("elig", "WB__")
-  If ButtonPressed = FACI_button then call navigate_to_screen("stat", "FACI")
-  If ButtonPressed = FMED_button then call navigate_to_screen("stat", "FMED")
-  If ButtonPressed = HCRE_button then call navigate_to_screen("stat", "HCRE")
-  If ButtonPressed = HEST_button then call navigate_to_screen("stat", "HEST")
-  If ButtonPressed = IMIG_button then call navigate_to_screen("stat", "IMIG")
-  If ButtonPressed = INSA_button then call navigate_to_screen("stat", "INSA")
-  If ButtonPressed = JOBS_button then call navigate_to_screen("stat", "JOBS")
-  If ButtonPressed = MEDI_button then call navigate_to_screen("stat", "MEDI")
-  If ButtonPressed = MEMB_button then call navigate_to_screen("stat", "MEMB")
-  If ButtonPressed = MEMI_button then call navigate_to_screen("stat", "MEMI")
-  If ButtonPressed = MONT_button then call navigate_to_screen("stat", "MONT")
-  If ButtonPressed = OTHR_button then call navigate_to_screen("stat", "OTHR")
-  If ButtonPressed = PBEN_button then call navigate_to_screen("stat", "PBEN")
-  If ButtonPressed = PDED_button then call navigate_to_screen("stat", "PDED")
-  If ButtonPressed = PREG_button then call navigate_to_screen("stat", "PREG")
-  If ButtonPressed = PROG_button then call navigate_to_screen("stat", "PROG")
-  If ButtonPressed = RBIC_button then call navigate_to_screen("stat", "RBIC")
-  If ButtonPressed = REST_button then call navigate_to_screen("stat", "REST")
-  If ButtonPressed = REVW_button then call navigate_to_screen("stat", "REVW")
-  If ButtonPressed = SCHL_button then call navigate_to_screen("stat", "SCHL")
-  If ButtonPressed = SECU_button then call navigate_to_screen("stat", "SECU")
-  If ButtonPressed = STIN_button then call navigate_to_screen("stat", "STIN")
-  If ButtonPressed = STEC_button then call navigate_to_screen("stat", "STEC")
-  If ButtonPressed = STWK_button then call navigate_to_screen("stat", "STWK")
-  If ButtonPressed = SHEL_button then call navigate_to_screen("stat", "SHEL")
-  If ButtonPressed = SPON_button then call navigate_to_screen("stat", "SPON")
-  If ButtonPressed = SWKR_button then call navigate_to_screen("stat", "SWKR")
-  If ButtonPressed = TRAN_button then call navigate_to_screen("stat", "TRAN")
-  If ButtonPressed = TYPE_button then call navigate_to_screen("stat", "TYPE")
-  If ButtonPressed = UNEA_button then call navigate_to_screen("stat", "UNEA")
-End function
-
 function new_BS_BSI_heading
   EMGetCursor MAXIS_row, MAXIS_col
   If MAXIS_row = 4 then
@@ -2216,38 +2133,12 @@ function new_CAI_heading
   end if
 End function
 
-function new_page_check
-  EMGetCursor MAXIS_row, MAXIS_col
-  If MAXIS_row = 17 then
-    EMSendKey ">>>>MORE>>>>"
-    EMSendKey "<PF8>"
-    EMWaitReady 0, 0
-    MAXIS_row = 4
-  End if
-end function
-
 function new_service_heading
   EMGetCursor MAXIS_service_row, MAXIS_service_col
   If MAXIS_service_row = 4 then
     EMSendKey "--------------SERVICE--------------------AMOUNT----------STATUS--------------" & "<newline>"
     MAXIS_service_row = 5
   end if
-End function
-
-Function panel_navigation_next
-  EMReadScreen current_panel, 1, 2, 73
-  EMReadScreen amount_of_panels, 1, 2, 78
-  If current_panel < amount_of_panels then new_panel = current_panel + 1
-  If current_panel = amount_of_panels then new_panel = current_panel
-  If amount_of_panels > 1 then EMWriteScreen "0" & new_panel, 20, 79
-End function
-
-Function panel_navigation_prev
-  EMReadScreen current_panel, 1, 2, 73
-  EMReadScreen amount_of_panels, 1, 2, 78
-  If current_panel = 1 then new_panel = current_panel
-  If current_panel > 1 then new_panel = current_panel - 1
-  If amount_of_panels > 1 then EMWriteScreen "0" & new_panel, 20, 79
 End function
 
 Function PF1
@@ -2640,7 +2531,7 @@ END FUNCTION
 
 'Navigates you to a blank case note, presses PF9, and checks to make sure you're in edit mode (keeping you from writing all of the case note on an inquiry screen).
 FUNCTION start_a_blank_CASE_NOTE
-	call navigate_to_screen("case", "note")
+	call navigate_to_MAXIS_screen("case", "note")
 	DO
 		PF9
 		EMReadScreen case_note_check, 17, 2, 33
@@ -2648,59 +2539,6 @@ FUNCTION start_a_blank_CASE_NOTE
 		If case_note_check <> "Case Notes (NOTE)" or mode_check <> "A" then msgbox "The script can't open a case note. Are you in inquiry? Check MAXIS and try again."
 	Loop until (mode_check = "A" or mode_check = "E")
 END FUNCTION
-
-function stat_navigation
-  EMReadScreen STAT_check, 4, 20, 21
-  If STAT_check = "STAT" then
-    If ButtonPressed = prev_panel_button then
-      EMReadScreen current_panel, 1, 2, 73
-      EMReadScreen amount_of_panels, 1, 2, 78
-      If current_panel = 1 then new_panel = current_panel
-      If current_panel > 1 then new_panel = current_panel - 1
-      If amount_of_panels > 1 then EMWriteScreen "0" & new_panel, 20, 79
-    End if
-    If ButtonPressed = next_panel_button then
-      EMReadScreen current_panel, 1, 2, 73
-      EMReadScreen amount_of_panels, 1, 2, 78
-      If current_panel < amount_of_panels then new_panel = current_panel + 1
-      If current_panel = amount_of_panels then new_panel = current_panel
-      If amount_of_panels > 1 then EMWriteScreen "0" & new_panel, 20, 79
-    End if
-    If ButtonPressed = prev_memb_button then
-      HH_memb_row = HH_memb_row - 1
-      EMReadScreen prev_HH_memb, 2, HH_memb_row, 3
-      If isnumeric(prev_HH_memb) = False then
-        HH_memb_row = HH_memb_row + 1
-      Else
-        EMWriteScreen prev_HH_memb, 20, 76
-        EMWriteScreen "01", 20, 79
-      End if
-    End if
-    If ButtonPressed = next_memb_button then
-      HH_memb_row = HH_memb_row + 1
-      EMReadScreen next_HH_memb, 2, HH_memb_row, 3
-      If isnumeric(next_HH_memb) = False then
-        HH_memb_row = HH_memb_row + 1
-      Else
-        EMWriteScreen next_HH_memb, 20, 76
-        EMWriteScreen "01", 20, 79
-      End if
-    End if
-  End if
-End function
-
-Function step_through_handling 'This function will introduce "warning screens" before each transmit, which is very helpful for testing new scripts
-	'To use this function, simply replace the "Execute text_from_the_other_script" line with:
-	'Execute replace(text_from_the_other_script, "EMWaitReady 0, 0", "step_through_handling")
-	step_through = MsgBox("Step " & step_number & chr(13) & chr(13) & "If you see something weird on your screen (like a MAXIS or PRISM error), PRESS CANCEL then email your script administrator about it. Make sure you include the step you're on.", vbOKCancel)
-	If step_number = "" then step_number = 1	'Declaring the variable
-	If step_through = vbCancel then
-		stopscript
-	Else
-		EMWaitReady 0, 0
-		step_number = step_number + 1
-	End if
-End Function
 
 function transmit
   EMSendKey "<enter>"
@@ -3267,11 +3105,6 @@ Function write_three_columns_in_CASE_NOTE(col_01_start_point, col_01_variable, c
   End if
 End function
 
-FUNCTION write_value_and_transmit(input_value, MAXIS_row, MAXIS_col)
-	EMWriteScreen input_value, MAXIS_row, MAXIS_col
-	transmit
-END FUNCTION
-
 Function write_variable_in_CASE_NOTE(variable)
 	If trim(variable) <> "" THEN
 		EMGetCursor noting_row, noting_col						'Needs to get the row and col to start. Doesn't need to get it in the array function because that uses EMWriteScreen.
@@ -3539,35 +3372,9 @@ Function write_variable_in_TIKL(variable)
 	transmit
 End function
 
-'--------DEPRECIATED FUNCTIONS KEPT FOR COMPATIBILITY PURPOSES, THE NEW FUNCTIONS ARE INDICATED WITHIN THE OLD FUNCTIONS
-Function ERRR_screen_check 'Checks for error prone cases				'DEPRECIATED AS OF 01/20/2015.
-	EMReadScreen ERRR_check, 4, 2, 52	'Now included in NAVIGATE_TO_MAXIS_SCREEN
-	If ERRR_check = "ERRR" then transmit
-End Function
-
-Function maxis_check_function											'DEPRECIATED AS OF 01/20/2015.
-	call check_for_MAXIS(True)	'Always true, because the original function always exited, and this needs to match the original function for reverse compatibility reasons.
-End function
-
-Function navigate_to_screen(MAXIS_function, MAXIS_command)										'DEPRECIATED AS OF 03/09/2015.
-	call navigate_to_MAXIS_screen(MAXIS_function, MAXIS_command)
-End function
-
-Function write_editbox_in_case_note(bullet, variable, length_of_indent) 'DEPRECIATED AS OF 01/20/2015.
-	call write_bullet_and_variable_in_case_note(bullet, variable)
-End function
-
-Function write_new_line_in_case_note(variable)							'DEPRECIATED AS OF 01/20/2015.
-	call write_variable_in_CASE_NOTE(variable)
-End function
-
-Function write_new_line_in_SPEC_MEMO(variable_to_enter)					'DEPRECIATED AS OF 01/20/2015.
-	call write_variable_in_SPEC_MEMO(variable_to_enter)
-End function
-
 'write_panel_to_MAXIS comes from Krabappel
 Function write_panel_to_MAXIS_ABPS(abps_supp_coop,abps_gc_status)
-	call navigate_to_screen("STAT","PARE")							'Starts by creating an array of all the kids on PARE
+	call navigate_to_MAXIS_screen("STAT","PARE")							'Starts by creating an array of all the kids on PARE
 	EMReadScreen abps_pare_check, 1, 2, 78
 	If abps_pare_check = "0" then
 		MsgBox "No PARE exists. Exiting Creating ABPS."
@@ -3589,8 +3396,8 @@ Function write_panel_to_MAXIS_ABPS(abps_supp_coop,abps_gc_status)
 				row = 8
 			End If
 		Loop until child_check = "__"
-		call navigate_to_screen("STAT","ABPS")						'Navigates to ABPS to enter kids in
-		call create_panel_if_nonexistent
+		call navigate_to_MAXIS_screen("STAT","ABPS")						'Navigates to ABPS to enter kids in
+		call create_panel_if_nonexistent		
 		abps_child_list = split(child_list, ",")
 		row = 15
 		for each abps_child in abps_child_list
@@ -3618,7 +3425,7 @@ Function write_panel_to_MAXIS_ABPS(abps_supp_coop,abps_gc_status)
 End Function
 
 Function write_panel_to_MAXIS_ACCT(acct_type, acct_numb, acct_location, acct_balance, acct_bal_ver, acct_date, acct_withdraw, acct_cash_count, acct_snap_count, acct_HC_count, acct_GRH_count, acct_IV_count, acct_joint_owner, acct_share_ratio, acct_interest_date_mo, acct_interest_date_yr)
-	Call Navigate_to_screen("STAT", "ACCT")  'navigates to the stat panel
+	Call navigate_to_MAXIS_screen("STAT", "ACCT")  'navigates to the stat panel
 	call create_panel_if_nonexistent
 	Emwritescreen acct_type, 6, 44  'enters the account type code
 	Emwritescreen acct_numb, 7, 44  'enters the account number
@@ -3642,7 +3449,7 @@ Function write_panel_to_MAXIS_ACCT(acct_type, acct_numb, acct_location, acct_bal
 End Function
 
 FUNCTION write_panel_to_MAXIS_ACUT(ACUT_shared, ACUT_heat, ACUT_air, ACUT_electric, ACUT_fuel, ACUT_garbage, ACUT_water, ACUT_sewer, ACUT_other, ACUT_phone, ACUT_heat_verif, ACUT_air_verif, ACUT_electric_verif, ACUT_fuel_verif, ACUT_garbage_verif, ACUT_water_verif, ACUT_sewer_verif, ACUT_other_verif)
-	call navigate_to_screen("STAT", "ACUT")
+	call navigate_to_MAXIS_screen("STAT", "ACUT")
 	call create_panel_if_nonexistent
 		EMWritescreen ACUT_shared, 6, 42
 		EMWritescreen ACUT_heat, 10, 61
@@ -3667,8 +3474,8 @@ end function
 
 '---This function writes the information for BILS.
 FUNCTION write_panel_to_MAXIS_BILS(bils_1_ref_num, bils_1_serv_date, bils_1_serv_type, bils_1_gross_amt, bils_1_third_party, bils_1_verif, bils_1_bils_type, bils_2_ref_num, bils_2_serv_date, bils_2_serv_type, bils_2_gross_amt, bils_2_third_party, bils_2_verif, bils_2_bils_type, bils_3_ref_num, bils_3_serv_date, bils_3_serv_type, bils_3_gross_amt, bils_3_third_party, bils_3_verif, bils_3_bils_type, bils_4_ref_num, bils_4_serv_date, bils_4_serv_type, bils_4_gross_amt, bils_4_third_party, bils_4_verif, bils_4_bils_type, bils_5_ref_num, bils_5_serv_date, bils_5_serv_type, bils_5_gross_amt, bils_5_third_party, bils_5_verif, bils_5_bils_type, bils_6_ref_num, bils_6_serv_date, bils_6_serv_type, bils_6_gross_amt, bils_6_third_party, bils_6_verif, bils_6_bils_type, bils_7_ref_num, bils_7_serv_date, bils_7_serv_type, bils_7_gross_amt, bils_7_third_party, bils_7_verif, bils_7_bils_type, bils_8_ref_num, bils_8_serv_date, bils_8_serv_type, bils_8_gross_amt, bils_8_third_party, bils_8_verif, bils_8_bils_type, bils_9_ref_num, bils_9_serv_date, bils_9_serv_type, bils_9_gross_amt, bils_9_third_party, bils_9_verif, bils_9_bils_type)
-	CALL navigate_to_screen("STAT", "BILS")
-	ERRR_screen_check
+	CALL navigate_to_MAXIS_screen("STAT", "BILS")
+	Call check_for_MAXIS(False)
 	EMReadScreen num_of_BILS, 1, 2, 78
 	IF num_of_BILS = "0" THEN
 		EMWriteScreen "NN", 20, 79
@@ -3835,7 +3642,7 @@ END FUNCTION
 
 '---This function writes using the variables read off of the specialized excel template to the busi panel in MAXIS
 Function write_panel_to_MAXIS_BUSI(busi_type, busi_start_date, busi_end_date, busi_cash_total_retro, busi_cash_total_prosp, busi_cash_total_ver, busi_IV_total_prosp, busi_IV_total_ver, busi_snap_total_retro, busi_snap_total_prosp, busi_snap_total_ver, busi_hc_total_prosp_a, busi_hc_total_ver_a, busi_hc_total_prosp_b, busi_hc_total_ver_b, busi_cash_exp_retro, busi_cash_exp_prosp, busi_cash_exp_ver, busi_IV_exp_prosp, busi_IV_exp_ver, busi_snap_exp_retro, busi_snap_exp_prosp, busi_snap_exp_ver, busi_hc_exp_prosp_a, busi_hc_exp_ver_a, busi_hc_exp_prosp_b, busi_hc_exp_ver_b, busi_retro_hours, busi_prosp_hours, busi_hc_total_est_a, busi_hc_total_est_b, busi_hc_exp_est_a, busi_hc_exp_est_b, busi_hc_hours_est)
-	Call navigate_to_screen("STAT", "BUSI")  'navigates to the stat panel
+	Call navigate_to_MAXIS_screen("STAT", "BUSI")  'navigates to the stat panel
 	Emwritescreen reference_number, 20, 76
 	transmit
 
@@ -3961,7 +3768,7 @@ Function write_panel_to_MAXIS_BUSI(busi_type, busi_start_date, busi_end_date, bu
 end function
 
 Function write_panel_to_MAXIS_CARS(cars_type, cars_year, cars_make, cars_model, cars_trade_in, cars_loan, cars_value_source, cars_ownership_ver, cars_amount_owed, cars_amount_owed_ver, cars_date, cars_use, cars_HC_benefit, cars_joint_owner, cars_share_ratio)
-	Call Navigate_to_screen("STAT", "CARS")  'navigates to the stat screen
+	Call navigate_to_MAXIS_screen("STAT", "CARS")  'navigates to the stat screen
 	call create_panel_if_nonexistent
 	Emwritescreen cars_type, 6, 43  'enters the vehicle type
 	Emwritescreen cars_year, 8, 31  'enters the vehicle year
@@ -3983,7 +3790,7 @@ End Function
 
 '---This function writes using the variables read off of the specialized excel template to the cash panel in MAXIS
 Function write_panel_to_MAXIS_CASH(cash_amount)
-	Call navigate_to_screen("STAT", "CASH")  'navigates to the stat panel
+	Call navigate_to_MAXIS_screen("STAT", "CASH")  'navigates to the stat panel
 	call create_panel_if_nonexistent
 	Emwritescreen cash_amount, 8, 39
 End Function
@@ -3991,7 +3798,7 @@ End Function
 '---This function writes using the variables read off of the specialized excel template to the COEX panel in MAXIS.
 FUNCTION write_panel_to_MAXIS_COEX(retro_support, prosp_support, support_verif, retro_alimony, prosp_alimony, alimony_verif, retro_tax_dep, prosp_tax_dep, tax_dep_verif, retro_other, prosp_other, other_verif, change_in_circum, hc_exp_support, hc_exp_alimony, hc_exp_tax_dep, hc_exp_other)
 	CALL navigate_to_MAXIS_screen("STAT", "COEX")
-	ERRR_screen_check
+	Call check_for_MAXIS(False)
 	EMWriteScreen reference_number, 20, 76
 	transmit
 
@@ -4040,10 +3847,9 @@ END FUNCTION
 
 
 FUNCTION write_panel_to_MAXIS_DCEX(DCEX_provider, DCEX_reason, DCEX_subsidy, DCEX_child_number1, DCEX_child_number1_ver, DCEX_child_number1_retro, DCEX_child_number1_pro, DCEX_child_number2, DCEX_child_number2_ver, DCEX_child_number2_retro, DCEX_child_number2_pro, DCEX_child_number3, DCEX_child_number3_ver, DCEX_child_number3_retro, DCEX_child_number3_pro, DCEX_child_number4, DCEX_child_number4_ver, DCEX_child_number4_retro, DCEX_child_number4_pro, DCEX_child_number5, DCEX_child_number5_ver, DCEX_child_number5_retro, DCEX_child_number5_pro, DCEX_child_number6, DCEX_child_number6_ver, DCEX_child_number6_retro, DCEX_child_number6_pro)
-	call navigate_to_screen("STAT", "DCEX")
+	call navigate_to_MAXIS_screen("STAT", "DCEX") 
 	EMWriteScreen reference_number, 20, 76
 	transmit
-
 	EMReadScreen num_of_DCEX, 1, 2, 78
 	IF num_of_DCEX = "0" THEN
 		EMWriteScreen "__", 20, 76
@@ -4125,7 +3931,7 @@ FUNCTION write_panel_to_MAXIS_DCEX(DCEX_provider, DCEX_reason, DCEX_subsidy, DCE
 End function
 
 FUNCTION write_panel_to_MAXIS_DFLN(conv_dt_1, conv_juris_1, conv_st_1, conv_dt_2, conv_juris_2, conv_st_2, rnd_test_dt_1, rnd_test_provider_1, rnd_test_result_1, rnd_test_dt_2, rnd_test_provider_2, rnd_test_result_2)
-	CALL navigate_to_screen("STAT", "DFLN")
+	CALL navigate_to_MAXIS_screen("STAT", "DFLN")
 	EMReadScreen num_of_DFLN, 1, 2, 78
 	IF num_of_DFLN = "0" THEN
 		EMWriteScreen reference_number, 20, 76
@@ -4156,7 +3962,7 @@ FUNCTION write_panel_to_MAXIS_DFLN(conv_dt_1, conv_juris_1, conv_st_1, conv_dt_2
 END FUNCTION
 
 FUNCTION write_panel_to_MAXIS_DIET(DIET_mfip_1, DIET_mfip_1_ver, DIET_mfip_2, DIET_mfip_2_ver, DIET_msa_1, DIET_msa_1_ver, DIET_msa_2, DIET_msa_2_ver, DIET_msa_3, DIET_msa_3_ver, DIET_msa_4, DIET_msa_4_ver)
-	call navigate_to_screen("STAT", "DIET")
+	call navigate_to_MAXIS_screen("STAT", "DIET")
 	EMWriteScreen reference_number, 20, 76
 	EMWriteScreen "NN", 20, 79
 	transmit
@@ -4178,7 +3984,7 @@ END FUNCTION
 
 '---This function writes using the variables read off of the specialized excel template to the disa panel in MAXIS
 Function write_panel_to_MAXIS_DISA(disa_begin_date, disa_end_date, disa_cert_begin, disa_cert_end, disa_wavr_begin, disa_wavr_end, disa_grh_begin, disa_grh_end, disa_cash_status, disa_cash_status_ver, disa_snap_status, disa_snap_status_ver, disa_hc_status, disa_hc_status_ver, disa_waiver, disa_drug_alcohol)
-	Call navigate_to_screen("STAT", "DISA")  'navigates to the stat panel
+	Call navigate_to_MAXIS_screen("STAT", "DISA")  'navigates to the stat panel
 	call create_panel_if_nonexistent
 	IF disa_begin_date <> "" THEN
 		call create_MAXIS_friendly_date(disa_begin_date, 0, 6, 47)  'enters the disability begin date in a MAXIS friendly format. mm/dd/yy
@@ -4224,8 +4030,8 @@ Function write_panel_to_MAXIS_DISA(disa_begin_date, disa_end_date, disa_cert_beg
 End Function
 
 Function write_panel_to_MAXIS_DSTT(DSTT_ongoing_income, DSTT_HH_income_stop_date, DSTT_income_expected_amt)
-	call navigate_to_screen("STAT", "DSTT")
-	call ERRR_screen_check
+	call navigate_to_MAXIS_screen("STAT", "DSTT")
+	call Check_for_MAXIS(False)
 	call create_panel_if_nonexistent
 	EMWriteScreen DSTT_ongoing_income, 6, 69
 	IF HH_income_stop_date <> "" THEN call create_MAXIS_friendly_date(HH_income_stop_date, 0, 9, 69)
@@ -4234,7 +4040,7 @@ End function
 
 FUNCTION write_panel_to_MAXIS_EATS(eats_together, eats_boarder, eats_group_one, eats_group_two, eats_group_three)
 	IF reference_number = "01" THEN
-		call navigate_to_screen("STAT", "EATS")
+		call navigate_to_MAXIS_screen("STAT", "EATS")
 		call create_panel_if_nonexistent
 		EMWriteScreen eats_together, 4, 72
 		EMWriteScreen eats_boarder, 5, 72
@@ -4271,8 +4077,8 @@ FUNCTION write_panel_to_MAXIS_EATS(eats_together, eats_boarder, eats_group_one, 
 END FUNCTION
 
 Function write_panel_to_MAXIS_EMMA(EMMA_medical_emergency, EMMA_health_consequence, EMMA_verification, EMMA_begin_date, EMMA_end_date)
-	call navigate_to_screen("STAT", "EMMA")
-	call ERRR_screen_check
+	call navigate_to_MAXIS_screen("STAT", "EMMA")
+	call check_for_MAXIS(False)
 	call create_panel_if_nonexistent
 	EMWriteScreen EMMA_medical_emergency, 6, 46
 	EMWriteScreen EMMA_health_consequence, 8, 46
@@ -4282,7 +4088,7 @@ Function write_panel_to_MAXIS_EMMA(EMMA_medical_emergency, EMMA_health_consequen
 End function
 
 FUNCTION write_panel_to_MAXIS_EMPS(EMPS_orientation_date, EMPS_orientation_attended, EMPS_good_cause, EMPS_sanc_begin, EMPS_sanc_end, EMPS_memb_at_home, EMPS_care_family, EMPS_crisis, EMPS_hard_employ, EMPS_under1, EMPS_DWP_date)
-	call navigate_to_screen("STAT", "EMPS")
+	call navigate_to_MAXIS_screen("STAT", "EMPS")
 	call create_panel_if_nonexistent
 	If EMPS_orientation_date <> "" then call create_MAXIS_friendly_date(EMPS_orientation_date, 0, 5, 39) 'enter orientation date
 	EMWritescreen left(EMPS_orientation_attended, 1), 5, 65
@@ -4332,8 +4138,8 @@ FUNCTION write_panel_to_MAXIS_EMPS(EMPS_orientation_date, EMPS_orientation_atten
 End Function
 
 Function write_panel_to_MAXIS_FACI(FACI_vendor_number, FACI_name, FACI_type, FACI_FS_eligible, FACI_FS_facility_type, FACI_date_in, FACI_date_out)
-	call navigate_to_screen("STAT", "FACI")
-	call ERRR_screen_check
+	call navigate_to_MAXIS_screen("STAT", "FACI")
+	call check_for_MAXIS(False)
 	call create_panel_if_nonexistent
 	EMWriteScreen FACI_vendor_number, 5, 43
 	EMWriteScreen FACI_name, 6, 43
@@ -4354,7 +4160,7 @@ End function
 '---The custom function to pull FMED information from the Excel file. This function can handle up to 4 FMED rows per client.
 FUNCTION write_panel_to_MAXIS_FMED(FMED_medical_mileage, FMED_1_type, FMED_1_verif, FMED_1_ref_num, FMED_1_category, FMED_1_begin, FMED_1_end, FMED_1_amount, FMED_2_type, FMED_2_verif, FMED_2_ref_num, FMED_2_category, FMED_2_begin, FMED_2_end, FMED_2_amount, FMED_3_type, FMED_3_verif, FMED_3_ref_num, FMED_3_category, FMED_3_begin, FMED_3_end, FMED_3_amount, FMED_4_type, FMED_4_verif, FMED_4_ref_num, FMED_4_category, FMED_4_begin, FMED_4_end, FMED_4_amount)
 	CALL navigate_to_MAXIS_screen("STAT", "FMED")
-	ERRR_screen_check
+	Call check_for_MAXIS(False)
 	EMReadScreen num_of_FMED, 1, 2, 78
 	IF num_of_FMED = "0" THEN
 		EMWriteScreen "NN", 20, 79
@@ -4511,7 +4317,7 @@ FUNCTION write_panel_to_MAXIS_FMED(FMED_medical_mileage, FMED_1_type, FMED_1_ver
 END FUNCTION
 
 Function write_panel_to_MAXIS_HCRE(hcre_appl_addnd_date_input,hcre_retro_months_input,hcre_recvd_by_service_date_input)
-	call navigate_to_screen("STAT","HCRE")
+	call navigate_to_MAXIS_screen("STAT","HCRE")
 	call create_panel_if_nonexistent
 	'Converting the Appl Addendum Date into a usable format
 	call MAXIS_dater(hcre_appl_addnd_date_input, hcre_appl_addnd_date_output, "HCRE Addendum Date")
@@ -4539,7 +4345,7 @@ Function write_panel_to_MAXIS_HCRE(hcre_appl_addnd_date_input,hcre_retro_months_
 End Function
 
 FUNCTION write_panel_to_MAXIS_HEST(HEST_FS_choice_date, HEST_first_month, HEST_heat_air_retro, HEST_electric_retro, HEST_phone_retro, HEST_heat_air_pro, HEST_electric_pro, HEST_phone_pro)
-	call navigate_to_screen("STAT", "HEST")
+	call navigate_to_MAXIS_screen("STAT", "HEST")
 	call create_panel_if_nonexistent
 	Emwritescreen "01", 6, 40
 	call create_MAXIS_friendly_date(HEST_FS_choice_date, 0, 7, 40)
@@ -4560,9 +4366,9 @@ FUNCTION write_panel_to_MAXIS_HEST(HEST_FS_choice_date, HEST_first_month, HEST_h
 	transmit
 End function
 
-Function write_panel_to_MAXIS_IMIG(IMIG_imigration_status, IMIG_entry_date, IMIG_status_date, IMIG_status_ver, IMIG_status_LPR_adj_from, IMIG_nationality, IMIG_40_soc_sec, IMIG_40_soc_sec_verif, IMIG_battered_spouse_child, IMIG_battered_spouse_child_verif, IMIG_military_status, IMIG_military_status_verif, IMIG_hmong_lao_nat_amer, IMIG_st_prog_esl_ctzn_coop, IMIG_st_prog_esl_ctzn_coop_verif, IMIG_fss_esl_skills_training)
-	call navigate_to_screen("STAT", "IMIG")
-	call ERRR_screen_check
+Function write_panel_to_MAXIS_IMIG(IMIG_imigration_status, IMIG_entry_date, IMIG_status_date, IMIG_status_ver, IMIG_status_LPR_adj_from, IMIG_nationality)
+	call navigate_to_MAXIS_screen("STAT", "IMIG")
+	call check_for_MAXIS(False)
 	call create_panel_if_nonexistent
 	call create_MAXIS_friendly_date(APPL_date, 0, 5, 45)						'Writes actual date, needs to add 2000 as this is weirdly a 4 digit year
 	EMWriteScreen datepart("yyyy", APPL_date), 5, 51
@@ -4593,7 +4399,7 @@ Function write_panel_to_MAXIS_IMIG(IMIG_imigration_status, IMIG_entry_date, IMIG
 End function
 
 Function write_panel_to_MAXIS_INSA(insa_pers_coop_ohi, insa_good_cause_status, insa_good_cause_cliam_date, insa_good_cause_evidence, insa_coop_cost_effect, insa_insur_name, insa_prescrip_drug_cover, insa_prescrip_end_date, insa_persons_covered)
-	call navigate_to_screen("STAT","INSA")
+	call navigate_to_MAXIS_screen("STAT","INSA")
 	call create_panel_if_nonexistent
 
 	EMWriteScreen insa_pers_coop_ohi, 4, 62
@@ -4625,7 +4431,7 @@ Function write_panel_to_MAXIS_INSA(insa_pers_coop_ohi, insa_good_cause_status, i
 End Function
 
 FUNCTION write_panel_to_MAXIS_JOBS(jobs_number, jobs_inc_type, jobs_inc_verif, jobs_employer_name, jobs_inc_start, jobs_wkly_hrs, jobs_hrly_wage, jobs_pay_freq)
-	call navigate_to_screen("STAT", "JOBS")
+	call navigate_to_MAXIS_screen("STAT", "JOBS")
 	EMWriteScreen reference_number, 20, 76
 	EMWriteScreen jobs_number, 20, 79
 	transmit
@@ -4749,8 +4555,8 @@ FUNCTION write_panel_to_MAXIS_JOBS(jobs_number, jobs_inc_type, jobs_inc_verif, j
 END FUNCTION
 
 Function write_panel_to_MAXIS_MEDI(SSN_first, SSN_mid, SSN_last, MEDI_claim_number_suffix, MEDI_part_A_premium, MEDI_part_B_premium, MEDI_part_A_begin_date, MEDI_part_B_begin_date, MEDI_apply_prem_to_spdn, MEDI_apply_prem_end_date)
-	call navigate_to_screen("STAT", "MEDI")
-	call ERRR_screen_check
+	call navigate_to_MAXIS_screen("STAT", "MEDI")
+	call check_for_MAXIS(False)
 	call create_panel_if_nonexistent
 	EMWriteScreen SSN_first, 6, 44				'Next three lines pulled
 	EMWriteScreen SSN_mid, 6, 48
@@ -4771,7 +4577,7 @@ End function
 
 FUNCTION write_panel_to_MAXIS_MMSA(mmsa_liv_arr, mmsa_cont_elig, mmsa_spous_inc, mmsa_shared_hous)
 	IF mmsa_liv_arr <> "" THEN
-		call navigate_to_screen("STAT", "MMSA")
+		call navigate_to_MAXIS_screen("STAT", "MMSA")
 		EMWriteScreen "NN", 20, 79
 		transmit
 		EMWriteScreen mmsa_liv_arr, 7, 54
@@ -4783,7 +4589,7 @@ FUNCTION write_panel_to_MAXIS_MMSA(mmsa_liv_arr, mmsa_cont_elig, mmsa_spous_inc,
 END FUNCTION
 
 Function write_panel_to_MAXIS_MSUR(msur_begin_date)
-	call navigate_to_screen("STAT","MSUR")
+	call navigate_to_MAXIS_screen("STAT","MSUR")
 	call create_panel_if_nonexistent
 
 	'msur_begin_date This is the date MSUR began for this client
@@ -4804,7 +4610,7 @@ End Function
 
 '---This function writes using the variables read off of the specialized excel template to the othr panel in MAXIS
 Function write_panel_to_MAXIS_OTHR(othr_type, othr_cash_value, othr_cash_value_ver, othr_owed, othr_owed_ver, othr_date, othr_cash_count, othr_SNAP_count, othr_HC_count, othr_IV_count, othr_joint_owner, othr_share_ratio)
-	Call navigate_to_screen("STAT", "OTHR")  'navigates to the stat panel
+	Call navigate_to_MAXIS_screen("STAT", "OTHR")  'navigates to the stat panel
 	call create_panel_if_nonexistent
 	Emwritescreen othr_type, 6, 40  'enters other asset type
 	IF othr_cash_value = "" THEN othr_cash_value = 0
@@ -4824,11 +4630,13 @@ Function write_panel_to_MAXIS_OTHR(othr_type, othr_cash_value, othr_cash_value_v
 End Function
 
 FUNCTION write_panel_to_MAXIS_PARE(appl_date, reference_number, PARE_child_1, PARE_child_1_relation, PARE_child_1_verif, PARE_child_2, PARE_child_2_relation, PARE_child_2_verif, PARE_child_3, PARE_child_3_relation, PARE_child_3_verif, PARE_child_4, PARE_child_4_relation, PARE_child_4_verif, PARE_child_5, PARE_child_5_relation, PARE_child_5_verif, PARE_child_6, PARE_child_6_relation, PARE_child_6_verif)
-	Call navigate_to_screen("STAT", "PARE")
-	CALL write_value_and_transmit(reference_number, 20, 76)
+	Call navigate_to_MAXIS_screen("STAT", "PARE") 
+	EMWritescreen reference_number, 20, 76
+    transmit
 	EMReadScreen num_of_PARE, 1, 2, 78
-	IF num_of_PARE = "0" THEN
-		CALL write_value_and_transmit("NN", 20, 79)
+	IF num_of_PARE = "0" THEN 
+		EMWriteScreen "NN", 20, 79
+        transmit
 	ELSE
 		PF9
 	END IF
@@ -4864,7 +4672,7 @@ end function
 
 '---This function writes using the variables read off of the specialized excel template to the pben panel in MAXIS
 Function write_panel_to_MAXIS_PBEN(pben_referal_date, pben_type, pben_appl_date, pben_appl_ver, pben_IAA_date, pben_disp)
-	Call navigate_to_screen("STAT", "PBEN")  'navigates to the stat panel
+	Call navigate_to_MAXIS_screen("STAT", "PBEN")  'navigates to the stat panel
 	call create_panel_if_nonexistent
 	Emreadscreen pben_row_check, 2, 8, 24  'reads the MAXIS screen to find out if the PBEN row has already been used.
 	If pben_row_check = "  " THEN   'if the row is blank it enters it in the 8th row.
@@ -4900,7 +4708,7 @@ Function write_panel_to_MAXIS_PBEN(pben_referal_date, pben_type, pben_appl_date,
 End Function
 
 Function write_panel_to_MAXIS_PDED(PDED_wid_deduction, PDED_adult_child_disregard, PDED_wid_disregard, PDED_unea_income_deduction_reason, PDED_unea_income_deduction_value, PDED_earned_income_deduction_reason, PDED_earned_income_deduction_value, PDED_ma_epd_inc_asset_limit, PDED_guard_fee, PDED_rep_payee_fee, PDED_other_expense, PDED_shel_spcl_needs, PDED_excess_need, PDED_restaurant_meals)
-	call navigate_to_screen("STAT","PDED")
+	call navigate_to_MAXIS_screen("STAT","PDED")
 	call create_panel_if_nonexistent
 
 	'Disa Widow/ers Deductionpded_shel_spcl_needs
@@ -4990,7 +4798,7 @@ Function write_panel_to_MAXIS_PDED(PDED_wid_deduction, PDED_adult_child_disregar
 End Function
 
 FUNCTION write_panel_to_MAXIS_PREG(PREG_conception_date, PREG_conception_date_ver, PREG_third_trimester_ver, PREG_due_date, PREG_multiple_birth)
-	call navigate_to_screen("STAT", "PREG")
+	call navigate_to_MAXIS_screen("STAT", "PREG")
 	call create_panel_if_nonexistent
 	EMWritescreen "NN", 20, 79
 	transmit
@@ -5006,7 +4814,7 @@ end function
 
 '---This function writes using the variables read off of the specialized excel template to the rbic panel in MAXIS
 Function write_panel_to_MAXIS_RBIC(rbic_type, rbic_start_date, rbic_end_date, rbic_group_1, rbic_retro_income_group_1, rbic_prosp_income_group_1, rbic_ver_income_group_1, rbic_group_2, rbic_retro_income_group_2, rbic_prosp_income_group_2, rbic_ver_income_group_2, rbic_group_3, rbic_retro_income_group_3, rbic_prosp_income_group_3, rbic_ver_income_group_3, rbic_retro_hours, rbic_prosp_hours, rbic_exp_type_1, rbic_exp_retro_1, rbic_exp_prosp_1, rbic_exp_ver_1, rbic_exp_type_2, rbic_exp_retro_2, rbic_exp_prosp_2, rbic_exp_ver_2)
-	call navigate_to_screen("STAT", "RBIC")  'navigates to the stat panel
+	call navigate_to_MAXIS_screen("STAT", "RBIC")  'navigates to the stat panel
 	call create_panel_if_nonexistent
 	EMwritescreen rbic_type, 5, 44  'enters rbic type code
 	call create_MAXIS_friendly_date(rbic_start_date, 0, 6, 44)  'creates and enters a MAXIS friend date in the format mm/dd/yy for rbic start date
@@ -5055,7 +4863,7 @@ end function
 
 '---This function writes using the variables read off of the specialized excel template to the rest panel in MAXIS
 Function write_panel_to_MAXIS_REST(rest_type, rest_type_ver, rest_market, rest_market_ver, rest_owed, rest_owed_ver, rest_date, rest_status, rest_joint, rest_share_ratio, rest_agreement_date)
-	Call navigate_to_screen("STAT", "REST")  'navigates to the stat panel
+	Call navigate_to_MAXIS_screen("STAT", "REST")  'navigates to the stat panel
 	call create_panel_if_nonexistent
 	Emwritescreen rest_type, 6, 39  'enters residence type
 	Emwritescreen rest_type_ver, 6, 62  'enters verification of residence type
@@ -5105,7 +4913,7 @@ End function
 
 '---This function writes using the variables read off of the specialized excel template to the secu panel in MAXIS
 Function write_panel_to_MAXIS_SECU(secu_type, secu_pol_numb, secu_name, secu_cash_val, secu_date, secu_cash_ver, secu_face_val, secu_withdraw, secu_cash_count, secu_SNAP_count, secu_HC_count, secu_GRH_count, secu_IV_count, secu_joint, secu_share_ratio)
-	Call navigate_to_screen("STAT", "SECU")  'navigates to the stat panel
+	Call navigate_to_MAXIS_screen("STAT", "SECU")  'navigates to the stat panel
 	call create_panel_if_nonexistent
 	Emwritescreen secu_type, 6, 50  'enters security type
 	Emwritescreen secu_pol_numb, 7, 50  'enters policy number
@@ -5126,7 +4934,7 @@ Function write_panel_to_MAXIS_SECU(secu_type, secu_pol_numb, secu_name, secu_cas
 End Function
 
 FUNCTION write_panel_to_MAXIS_SHEL(SHEL_subsidized, SHEL_shared, SHEL_paid_to, SHEL_rent_retro, SHEL_rent_retro_ver, SHEL_rent_pro, SHEL_rent_pro_ver, SHEL_lot_rent_retro, SHEL_lot_rent_retro_ver, SHEL_lot_rent_pro, SHEL_lot_rent_pro_ver, SHEL_mortgage_retro, SHEL_mortgage_retro_ver, SHEL_mortgage_pro, SHEL_mortgage_pro_ver, SHEL_insur_retro, SHEL_insur_retro_ver, SHEL_insur_pro, SHEL_insur_pro_ver, SHEL_taxes_retro, SHEL_taxes_retro_ver, SHEL_taxes_pro, SHEL_taxes_pro_ver, SHEL_room_retro, SHEL_room_retro_ver, SHEL_room_pro, SHEL_room_pro_ver, SHEL_garage_retro, SHEL_garage_retro_ver, SHEL_garage_pro, SHEL_garage_pro_ver, SHEL_subsidy_retro, SHEL_subsidy_retro_ver, SHEL_subsidy_pro, SHEL_subsidy_pro_ver)
-	call navigate_to_screen("STAT", "SHEL")
+	call navigate_to_MAXIS_screen("STAT", "SHEL")
 	call create_panel_if_nonexistent
 	EMWritescreen SHEL_subsidized, 6, 46
 	EMWritescreen SHEL_shared, 6, 64
@@ -5167,7 +4975,7 @@ FUNCTION write_panel_to_MAXIS_SHEL(SHEL_subsidized, SHEL_shared, SHEL_paid_to, S
 end function
 
 FUNCTION write_panel_to_MAXIS_SIBL(SIBL_group_1, SIBL_group_2, SIBL_group_3)
-	call navigate_to_screen("STAT", "SIBL")
+	call navigate_to_MAXIS_screen("STAT", "SIBL")
 	EMReadScreen num_of_SIBL, 1, 2, 78
 	IF num_of_SIBL = "0" THEN
 		EMWriteScreen "NN", 20, 79
@@ -5210,8 +5018,8 @@ FUNCTION write_panel_to_MAXIS_SIBL(SIBL_group_1, SIBL_group_2, SIBL_group_3)
 end function
 
 Function write_panel_to_MAXIS_SPON(SPON_type, SPON_ver, SPON_name, SPON_state)
-	call navigate_to_screen("STAT", "SPON")
-	call ERRR_screen_check
+	call navigate_to_MAXIS_screen("STAT", "SPON")
+	call check_for_MAXIS(False)
 	call create_panel_if_nonexistent
 	EMWriteScreen SPON_type, 6, 38
 	EMWriteScreen SPON_ver, 6, 62
@@ -5295,7 +5103,7 @@ Function write_panel_to_MAXIS_STIN(STIN_type_1, STIN_amt_1, STIN_avail_date_1, S
 End function
 
 Function write_panel_to_MAXIS_STWK(STWK_empl_name, STWK_wrk_stop_date, STWK_wrk_stop_date_verif, STWK_inc_stop_date, STWK_refused_empl_yn, STWK_vol_quit, STWK_ref_empl_date, STWK_gc_cash, STWK_gc_grh, STWK_gc_fs, STWK_fs_pwe, STWK_maepd_ext)
-	call navigate_to_screen("STAT","STWK")
+	call navigate_to_MAXIS_screen("STAT","STWK")
 	call create_panel_if_nonexistent
 
 	EMWriteScreen stwk_empl_name, 6, 46
@@ -5314,7 +5122,7 @@ Function write_panel_to_MAXIS_STWK(STWK_empl_name, STWK_wrk_stop_date, STWK_wrk_
 End Function
 
 FUNCTION write_panel_to_MAXIS_TYPE_PROG_REVW(appl_date, type_cash_yn, type_hc_yn, type_fs_yn, prog_mig_worker, revw_ar_or_ir, revw_exempt)
-	call navigate_to_screen("STAT", "TYPE")
+	call navigate_to_MAXIS_screen("STAT", "TYPE")
 	IF reference_number = "01" THEN
 		EMWriteScreen "NN", 20, 79
 		transmit
@@ -5356,7 +5164,7 @@ FUNCTION write_panel_to_MAXIS_TYPE_PROG_REVW(appl_date, type_cash_yn, type_hc_yn
 	transmit		'<===== when reference_number = "01" this transmit will navigate to PROG, else, it will navigate to STAT/WRAP
 
 	IF reference_number = "01" THEN		'<===== only accesses PROG & REVW if reference_number = "01"
-		call navigate_to_screen("STAT", "PROG")
+		call navigate_to_MAXIS_screen("STAT", "PROG")
 		EMWriteScreen "NN", 20, 71
 		transmit
 			IF type_cash_yn = "Y" THEN
@@ -5378,7 +5186,7 @@ FUNCTION write_panel_to_MAXIS_TYPE_PROG_REVW(appl_date, type_cash_yn, type_hc_yn
 			EMWriteScreen mig_worker, 18, 67
 			transmit
 
-		call navigate_to_screen("STAT", "REVW")
+		call navigate_to_MAXIS_screen("STAT", "REVW")
 		EMWriteScreen "NN", 20, 71
 		transmit
 			IF type_cash_yn = "Y" THEN
@@ -5416,7 +5224,7 @@ FUNCTION write_panel_to_MAXIS_TYPE_PROG_REVW(appl_date, type_cash_yn, type_hc_yn
 END FUNCTION
 
 FUNCTION write_panel_to_MAXIS_UNEA(unea_number, unea_inc_type, unea_inc_verif, unea_claim_suffix, unea_start_date, unea_pay_freq, unea_inc_amount, ssn_first, ssn_mid, ssn_last)
-	call navigate_to_screen("STAT", "UNEA")
+	call navigate_to_MAXIS_screen("STAT", "UNEA")
 	PF10
 	EMWriteScreen reference_number, 20, 76
 	EMWriteScreen unea_number, 20, 79
@@ -5535,8 +5343,7 @@ END FUNCTION
 
 FUNCTION write_panel_to_MAXIS_WKEX(program, fed_tax_retro, fed_tax_prosp, fed_tax_verif, state_tax_retro, state_tax_prosp, state_tax_verif, fica_retro, fica_prosp, fica_verif, tran_retro, tran_prosp, tran_verif, tran_imp_rel, meals_retro, meals_prosp, meals_verif, meals_imp_rel, uniforms_retro, uniforms_prosp, uniforms_verif, uniforms_imp_rel, tools_retro, tools_prosp, tools_verif, tools_imp_rel, dues_retro, dues_prosp, dues_verif, dues_imp_rel, othr_retro, othr_prosp, othr_verif, othr_imp_rel, HC_Exp_Fed_Tax, HC_Exp_State_Tax, HC_Exp_FICA, HC_Exp_Tran, HC_Exp_Tran_imp_rel, HC_Exp_Meals, HC_Exp_Meals_Imp_Rel, HC_Exp_Uniforms, HC_Exp_Uniforms_Imp_Rel, HC_Exp_Tools, HC_Exp_Tools_Imp_Rel, HC_Exp_Dues, HC_Exp_Dues_Imp_Rel, HC_Exp_Othr, HC_Exp_Othr_Imp_Rel)
 	CALL navigate_to_MAXIS_screen("STAT", "WKEX")
-	ERRR_screen_check
-
+	Call check_for_MAXIS(False)
 	EMWriteScreen reference_number, 20, 76
 	transmit
 
@@ -5618,9 +5425,8 @@ FUNCTION write_panel_to_MAXIS_WKEX(program, fed_tax_retro, fed_tax_prosp, fed_ta
 END FUNCTION
 
 FUNCTION write_panel_to_MAXIS_WREG(wreg_fs_pwe, wreg_fset_status, wreg_defer_fs, wreg_fset_orientation_date, wreg_fset_sanction_date, wreg_num_sanctions, wreg_abawd_status, wreg_ga_basis)
-	call navigate_to_screen("STAT", "WREG")
+	call navigate_to_MAXIS_screen("STAT", "WREG")
 	call create_panel_if_nonexistent
-
 	EMWriteScreen wreg_fs_pwe, 6, 68
 	EMWriteScreen wreg_fset_status, 8, 50
 	EMWriteScreen wreg_defer_fs, 8, 80
@@ -5629,10 +5435,75 @@ FUNCTION write_panel_to_MAXIS_WREG(wreg_fs_pwe, wreg_fset_status, wreg_defer_fs,
 	IF wreg_num_sanctions <> "" THEN EMWriteScreen wreg_num_sanctions, 11, 50
 	EMWriteScreen wreg_abawd_status, 13, 50
 	EMWriteScreen wreg_ga_basis, 15, 50
-
 	transmit
 END FUNCTION
 
-FUNCTION write_TIKL_function(variable)									'DEPRECIATED AS OF 01/20/2015.
-	call write_variable_in_TIKL(variable)
-END FUNCTION
+'<<<<<<<<<<<<THESE VARIABLES ARE TEMPORARY, DESIGNED TO KEEP CERTAIN COUNTIES FROM ACCIDENTALLY JOINING THE BETA, DUE TO A GLITCH IN THE INSTALLER WHICH WAS CORRECTED IN VERSION 1.3.1
+If beta_agency = True then 
+	'These counties are NOT part of the beta. Because of that, if they are showing up as part of the beta, it will manually remove them from the beta branch and set them back to release.
+	'	As of 06/03/2015, it will also deliver a MsgBox telling them they need to update. These counties should have fixed this back in January when this was first posted on SIR.
+	If worker_county_code = "x101" or _
+	   worker_county_code = "x103" or _
+	   worker_county_code = "x106" or _
+	   worker_county_code = "x107" or _
+	   worker_county_code = "x108" or _
+	   worker_county_code = "x109" or _
+	   worker_county_code = "x110" or _
+	   worker_county_code = "x111" or _
+	   worker_county_code = "x112" or _
+	   worker_county_code = "x113" or _
+	   worker_county_code = "x114" or _
+	   worker_county_code = "x115" or _
+	   worker_county_code = "x116" or _
+	   worker_county_code = "x117" or _
+	   worker_county_code = "x121" or _
+	   worker_county_code = "x122" or _
+	   worker_county_code = "x124" or _
+	   worker_county_code = "x126" or _
+	   worker_county_code = "x128" or _
+	   worker_county_code = "x129" or _
+	   worker_county_code = "x130" or _
+	   worker_county_code = "x131" or _
+	   worker_county_code = "x132" or _
+	   worker_county_code = "x134" or _
+	   worker_county_code = "x135" or _
+	   worker_county_code = "x136" or _
+	   worker_county_code = "x137" or _
+	   worker_county_code = "x138" or _
+	   worker_county_code = "x139" or _
+	   worker_county_code = "x140" or _
+	   worker_county_code = "x143" or _
+	   worker_county_code = "x144" or _
+	   worker_county_code = "x145" or _
+	   worker_county_code = "x146" or _
+	   worker_county_code = "x148" or _
+	   worker_county_code = "x149" or _
+	   worker_county_code = "x152" or _
+	   worker_county_code = "x153" or _
+	   worker_county_code = "x154" or _
+	   worker_county_code = "x156" or _
+	   worker_county_code = "x158" or _
+	   worker_county_code = "x161" or _
+	   worker_county_code = "x163" or _
+	   worker_county_code = "x165" or _
+	   worker_county_code = "x166" or _
+	   worker_county_code = "x168" or _
+	   worker_county_code = "x170" or _
+	   worker_county_code = "x171" or _
+	   worker_county_code = "x172" or _
+	   worker_county_code = "x175" or _
+	   worker_county_code = "x176" or _
+	   worker_county_code = "x177" or _
+	   worker_county_code = "x178" or _
+	   worker_county_code = "x180" or _
+	   worker_county_code = "x182" or _
+	   worker_county_code = "x183" or _
+	   worker_county_code = "x184" or _
+	   worker_county_code = "x185" or _
+	   worker_county_code = "x187" then 
+		MsgBox "If you are seeing this message, it's because a script glitch has been detected, which requires an alpha user to reinstall the scripts for your county." & vbNewLine & vbNewLine & _
+		  "Instructions for updating your scripts can be found on SIR, in a document titled ""Beta agency bug fix 01.27.2015"". Please ask an alpha user to follow these instructions to correct this issue." & vbNewLine & vbNewLine & _
+		  "This script will now stop."
+		stopscript
+	End if
+End if
