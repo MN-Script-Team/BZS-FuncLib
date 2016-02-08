@@ -1751,7 +1751,7 @@ FUNCTION create_MAXIS_friendly_phone_number(phone_number_variable, screen_row, s
 	EMWriteScreen right(phone_number_variable, 4), screen_row, screen_col + 12	'writes in right 4 digits of the phone number in variable
 END FUNCTION
 
-Function create_panel_if_nonexistent()
+Function create_panel_if_nonexistent()  'THIS FUNCTION IS BUILT INTO A BUNCH OF FUNCTIONS, BUT NOT SUPPORTED FULLY. USE IN SCRIPTS WITH CAUTION.
 	EMWriteScreen reference_number , 20, 76
 	transmit
 	EMReadScreen case_panel_check, 44, 24, 2
