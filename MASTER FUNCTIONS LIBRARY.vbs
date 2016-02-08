@@ -1045,7 +1045,7 @@ Function autofill_editbox_from_MAXIS(HH_member_array, panel_read_from, variable_
     Next
   Elseif panel_read_from = "FMED" then '----------------------------------------------------------------------------------------------------FMED
 	For each HH_member in HH_member_array
-	  ERRR_screen_check
+	  Call check_for_MAXIS(False)
       EMWriteScreen HH_member, 20, 76
       EMWriteScreen "01", 20, 79
       transmit
@@ -3395,11 +3395,6 @@ Function write_variable_in_TIKL(variable)
 End function
 
 '--------DEPRECIATED FUNCTIONS KEPT FOR COMPATIBILITY PURPOSES, THE NEW FUNCTIONS ARE INDICATED WITHIN THE OLD FUNCTIONS
-Function ERRR_screen_check 'Checks for error prone cases				'DEPRECIATED AS OF 01/20/2015.
-	EMReadScreen ERRR_check, 4, 2, 52	'Now included in NAVIGATE_TO_MAXIS_SCREEN
-	If ERRR_check = "ERRR" then transmit
-End Function
-
 Function write_editbox_in_case_note(bullet, variable, length_of_indent) 'DEPRECIATED AS OF 01/20/2015. 
 	call write_bullet_and_variable_in_case_note(bullet, variable)
 End function
@@ -3507,7 +3502,7 @@ end function
 '---This function writes the information for BILS.
 FUNCTION write_panel_to_MAXIS_BILS(bils_1_ref_num, bils_1_serv_date, bils_1_serv_type, bils_1_gross_amt, bils_1_third_party, bils_1_verif, bils_1_bils_type, bils_2_ref_num, bils_2_serv_date, bils_2_serv_type, bils_2_gross_amt, bils_2_third_party, bils_2_verif, bils_2_bils_type, bils_3_ref_num, bils_3_serv_date, bils_3_serv_type, bils_3_gross_amt, bils_3_third_party, bils_3_verif, bils_3_bils_type, bils_4_ref_num, bils_4_serv_date, bils_4_serv_type, bils_4_gross_amt, bils_4_third_party, bils_4_verif, bils_4_bils_type, bils_5_ref_num, bils_5_serv_date, bils_5_serv_type, bils_5_gross_amt, bils_5_third_party, bils_5_verif, bils_5_bils_type, bils_6_ref_num, bils_6_serv_date, bils_6_serv_type, bils_6_gross_amt, bils_6_third_party, bils_6_verif, bils_6_bils_type, bils_7_ref_num, bils_7_serv_date, bils_7_serv_type, bils_7_gross_amt, bils_7_third_party, bils_7_verif, bils_7_bils_type, bils_8_ref_num, bils_8_serv_date, bils_8_serv_type, bils_8_gross_amt, bils_8_third_party, bils_8_verif, bils_8_bils_type, bils_9_ref_num, bils_9_serv_date, bils_9_serv_type, bils_9_gross_amt, bils_9_third_party, bils_9_verif, bils_9_bils_type)
 	CALL navigate_to_MAXIS_screen("STAT", "BILS")
-	ERRR_screen_check
+	Call check_for_MAXIS(False)
 	EMReadScreen num_of_BILS, 1, 2, 78
 	IF num_of_BILS = "0" THEN
 		EMWriteScreen "NN", 20, 79
@@ -3830,7 +3825,7 @@ End Function
 '---This function writes using the variables read off of the specialized excel template to the COEX panel in MAXIS.
 FUNCTION write_panel_to_MAXIS_COEX(retro_support, prosp_support, support_verif, retro_alimony, prosp_alimony, alimony_verif, retro_tax_dep, prosp_tax_dep, tax_dep_verif, retro_other, prosp_other, other_verif, change_in_circum, hc_exp_support, hc_exp_alimony, hc_exp_tax_dep, hc_exp_other)
 	CALL navigate_to_MAXIS_screen("STAT", "COEX")
-	ERRR_screen_check
+	Call check_for_MAXIS(False)
 	EMWriteScreen reference_number, 20, 76
 	transmit
 	
@@ -4064,7 +4059,7 @@ End Function
 
 Function write_panel_to_MAXIS_DSTT(DSTT_ongoing_income, DSTT_HH_income_stop_date, DSTT_income_expected_amt)
 	call navigate_to_MAXIS_screen("STAT", "DSTT")
-	call ERRR_screen_check
+	call Check_for_MAXIS(False)
 	call create_panel_if_nonexistent
 	EMWriteScreen DSTT_ongoing_income, 6, 69
 	IF HH_income_stop_date <> "" THEN call create_MAXIS_friendly_date(HH_income_stop_date, 0, 9, 69)
@@ -4111,7 +4106,7 @@ END FUNCTION
 
 Function write_panel_to_MAXIS_EMMA(EMMA_medical_emergency, EMMA_health_consequence, EMMA_verification, EMMA_begin_date, EMMA_end_date)
 	call navigate_to_MAXIS_screen("STAT", "EMMA")
-	call ERRR_screen_check
+	call check_for_MAXIS(False)
 	call create_panel_if_nonexistent
 	EMWriteScreen EMMA_medical_emergency, 6, 46
 	EMWriteScreen EMMA_health_consequence, 8, 46
@@ -4172,7 +4167,7 @@ End Function
 
 Function write_panel_to_MAXIS_FACI(FACI_vendor_number, FACI_name, FACI_type, FACI_FS_eligible, FACI_FS_facility_type, FACI_date_in, FACI_date_out)
 	call navigate_to_MAXIS_screen("STAT", "FACI")
-	call ERRR_screen_check
+	call check_for_MAXIS(False)
 	call create_panel_if_nonexistent
 	EMWriteScreen FACI_vendor_number, 5, 43
 	EMWriteScreen FACI_name, 6, 43
@@ -4193,7 +4188,7 @@ End function
 '---The custom function to pull FMED information from the Excel file. This function can handle up to 4 FMED rows per client.
 FUNCTION write_panel_to_MAXIS_FMED(FMED_medical_mileage, FMED_1_type, FMED_1_verif, FMED_1_ref_num, FMED_1_category, FMED_1_begin, FMED_1_end, FMED_1_amount, FMED_2_type, FMED_2_verif, FMED_2_ref_num, FMED_2_category, FMED_2_begin, FMED_2_end, FMED_2_amount, FMED_3_type, FMED_3_verif, FMED_3_ref_num, FMED_3_category, FMED_3_begin, FMED_3_end, FMED_3_amount, FMED_4_type, FMED_4_verif, FMED_4_ref_num, FMED_4_category, FMED_4_begin, FMED_4_end, FMED_4_amount)
 	CALL navigate_to_MAXIS_screen("STAT", "FMED")
-	ERRR_screen_check
+	Call check_for_MAXIS(False)
 	EMReadScreen num_of_FMED, 1, 2, 78
 	IF num_of_FMED = "0" THEN 
 		EMWriteScreen "NN", 20, 79
@@ -4401,7 +4396,7 @@ End function
 
 Function write_panel_to_MAXIS_IMIG(IMIG_imigration_status, IMIG_entry_date, IMIG_status_date, IMIG_status_ver, IMIG_status_LPR_adj_from, IMIG_nationality)
 	call navigate_to_MAXIS_screen("STAT", "IMIG")
-	call ERRR_screen_check
+	call check_for_MAXIS(False)
 	call create_panel_if_nonexistent
 	call create_MAXIS_friendly_date(date, 0, 5, 45)						'Writes actual date, needs to add 2000 as this is weirdly a 4 digit year
 	EMWriteScreen datepart("yyyy", date), 5, 51
@@ -4579,7 +4574,7 @@ END FUNCTION
 
 Function write_panel_to_MAXIS_MEDI(SSN_first, SSN_mid, SSN_last, MEDI_claim_number_suffix, MEDI_part_A_premium, MEDI_part_B_premium, MEDI_part_A_begin_date, MEDI_part_B_begin_date, MEDI_apply_prem_to_spdn, MEDI_apply_prem_end_date)
 	call navigate_to_MAXIS_screen("STAT", "MEDI")
-	call ERRR_screen_check
+	call check_for_MAXIS(False)
 	call create_panel_if_nonexistent
 	EMWriteScreen SSN_first, 6, 44				'Next three lines pulled
 	EMWriteScreen SSN_mid, 6, 48
@@ -5042,7 +5037,7 @@ end function
 
 Function write_panel_to_MAXIS_SPON(SPON_type, SPON_ver, SPON_name, SPON_state)
 	call navigate_to_MAXIS_screen("STAT", "SPON")
-	call ERRR_screen_check
+	call check_for_MAXIS(False)
 	call create_panel_if_nonexistent
 	EMWriteScreen SPON_type, 6, 38
 	EMWriteScreen SPON_ver, 6, 62
@@ -5366,8 +5361,7 @@ END FUNCTION
 
 FUNCTION write_panel_to_MAXIS_WKEX(program, fed_tax_retro, fed_tax_prosp, fed_tax_verif, state_tax_retro, state_tax_prosp, state_tax_verif, fica_retro, fica_prosp, fica_verif, tran_retro, tran_prosp, tran_verif, tran_imp_rel, meals_retro, meals_prosp, meals_verif, meals_imp_rel, uniforms_retro, uniforms_prosp, uniforms_verif, uniforms_imp_rel, tools_retro, tools_prosp, tools_verif, tools_imp_rel, dues_retro, dues_prosp, dues_verif, dues_imp_rel, othr_retro, othr_prosp, othr_verif, othr_imp_rel, HC_Exp_Fed_Tax, HC_Exp_State_Tax, HC_Exp_FICA, HC_Exp_Tran, HC_Exp_Tran_imp_rel, HC_Exp_Meals, HC_Exp_Meals_Imp_Rel, HC_Exp_Uniforms, HC_Exp_Uniforms_Imp_Rel, HC_Exp_Tools, HC_Exp_Tools_Imp_Rel, HC_Exp_Dues, HC_Exp_Dues_Imp_Rel, HC_Exp_Othr, HC_Exp_Othr_Imp_Rel)
 	CALL navigate_to_MAXIS_screen("STAT", "WKEX")
-	ERRR_screen_check
-	
+	Call check_for_MAXIS(False)
 	EMWriteScreen reference_number, 20, 76
 	transmit
 	
