@@ -3188,11 +3188,6 @@ Function write_three_columns_in_CASE_NOTE(col_01_start_point, col_01_variable, c
   End if
 End function
 
-FUNCTION write_value_and_transmit(input_value, MAXIS_row, MAXIS_col)
-	EMWriteScreen input_value, MAXIS_row, MAXIS_col
-	transmit
-END FUNCTION
-
 Function write_variable_in_CASE_NOTE(variable)
 	If trim(variable) <> "" THEN
 		EMGetCursor noting_row, noting_col						'Needs to get the row and col to start. Doesn't need to get it in the array function because that uses EMWriteScreen.
@@ -4736,10 +4731,12 @@ End Function
 
 FUNCTION write_panel_to_MAXIS_PARE(appl_date, reference_number, PARE_child_1, PARE_child_1_relation, PARE_child_1_verif, PARE_child_2, PARE_child_2_relation, PARE_child_2_verif, PARE_child_3, PARE_child_3_relation, PARE_child_3_verif, PARE_child_4, PARE_child_4_relation, PARE_child_4_verif, PARE_child_5, PARE_child_5_relation, PARE_child_5_verif, PARE_child_6, PARE_child_6_relation, PARE_child_6_verif)
 	Call navigate_to_screen("STAT", "PARE") 
-	CALL write_value_and_transmit(reference_number, 20, 76)
+	EMWritescreen reference_number, 20, 76
+    transmit
 	EMReadScreen num_of_PARE, 1, 2, 78
 	IF num_of_PARE = "0" THEN 
-		CALL write_value_and_transmit("NN", 20, 79)
+		EMWriteScreen "NN", 20, 79
+        transmit
 	ELSE
 		PF9
 	END IF
