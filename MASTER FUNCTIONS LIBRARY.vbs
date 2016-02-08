@@ -2068,17 +2068,6 @@ FUNCTION MAXIS_footer_finder(MAXIS_footer_month, MAXIS_footer_year)'Grabbing the
 	End if
 END FUNCTION
 
-Function memb_navigation_next
-  HH_memb_row = HH_memb_row + 1
-  EMReadScreen next_HH_memb, 2, HH_memb_row, 3
-  If isnumeric(next_HH_memb) = False then
-    HH_memb_row = HH_memb_row + 1
-  Else
-    EMWriteScreen next_HH_memb, 20, 76
-    EMWriteScreen "01", 20, 79
-  End if
-End function
-
 Function memb_navigation_prev
   HH_memb_row = HH_memb_row - 1
   EMReadScreen prev_HH_memb, 2, HH_memb_row, 3
