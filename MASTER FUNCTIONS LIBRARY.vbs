@@ -5480,10 +5480,6 @@ FUNCTION write_panel_to_MAXIS_WREG(wreg_fs_pwe, wreg_fset_status, wreg_defer_fs,
 	transmit
 END FUNCTION
 
-FUNCTION write_TIKL_function(variable)									'DEPRECIATED AS OF 01/20/2015.
-	call write_variable_in_TIKL(variable)
-END FUNCTION
-
 '<<<<<<<<<<<<THESE VARIABLES ARE TEMPORARY, DESIGNED TO KEEP CERTAIN COUNTIES FROM ACCIDENTALLY JOINING THE BETA, DUE TO A GLITCH IN THE INSTALLER WHICH WAS CORRECTED IN VERSION 1.3.1
 If beta_agency = True then 
 	'These counties are NOT part of the beta. Because of that, if they are showing up as part of the beta, it will manually remove them from the beta branch and set them back to release.
