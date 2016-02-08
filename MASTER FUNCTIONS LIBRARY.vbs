@@ -2068,17 +2068,6 @@ FUNCTION MAXIS_footer_finder(MAXIS_footer_month, MAXIS_footer_year)'Grabbing the
 	End if
 END FUNCTION
 
-Function memb_navigation_prev
-  HH_memb_row = HH_memb_row - 1
-  EMReadScreen prev_HH_memb, 2, HH_memb_row, 3
-  If isnumeric(prev_HH_memb) = False then
-    HH_memb_row = HH_memb_row + 1
-  Else
-    EMWriteScreen prev_HH_memb, 20, 76
-    EMWriteScreen "01", 20, 79
-  End if
-End function
-
 Function MMIS_RKEY_finder
   'Now we use a Do Loop to get to the start screen for MMIS.
   Do 
