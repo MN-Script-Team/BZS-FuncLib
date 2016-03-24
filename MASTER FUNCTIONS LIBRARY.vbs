@@ -661,12 +661,14 @@ Function autofill_editbox_from_MAXIS(HH_member_array, panel_read_from, variable_
       EMWriteScreen HH_member, 20, 76
       EMWriteScreen "01", 20, 79
       transmit
-      EMReadScreen ACCT_total, 1, 2, 78
+      EMReadScreen ACCT_total, 2, 2, 78
+	  ACCT_total = trim(ACCT_total)   'deleting space if one digit. 
       If ACCT_total <> 0 then
         variable_written_to = variable_written_to & "Member " & HH_member & "- "
         Do
           call add_ACCT_to_variable(variable_written_to)
-          EMReadScreen ACCT_panel_current, 1, 2, 73
+          EMReadScreen ACCT_panel_current, 2, 2, 72
+          ACCT_panel_current = trim(ACCT_panel_current)
           If cint(ACCT_panel_current) < cint(ACCT_total) then transmit
         Loop until cint(ACCT_panel_current) = cint(ACCT_total)
       End if
@@ -717,12 +719,14 @@ Function autofill_editbox_from_MAXIS(HH_member_array, panel_read_from, variable_
       EMWriteScreen HH_member, 20, 76
       EMWriteScreen "01", 20, 79
       transmit
-      EMReadScreen CARS_total, 1, 2, 78
+      EMReadScreen CARS_total, 2, 2, 78
+	  CARS_total = trim(CARS_total)
       If CARS_total <> 0 then
         variable_written_to = variable_written_to & "Member " & HH_member & "- "
         Do
           call add_CARS_to_variable(variable_written_to)
-          EMReadScreen CARS_panel_current, 1, 2, 73
+          EMReadScreen CARS_panel_current, 2, 2, 72
+		  CARS_panel_current = trim(CARS_panel_current)
           If cint(CARS_panel_current) < cint(CARS_total) then transmit
         Loop until cint(CARS_panel_current) = cint(CARS_total)
       End if
@@ -1222,12 +1226,14 @@ Function autofill_editbox_from_MAXIS(HH_member_array, panel_read_from, variable_
       EMWriteScreen HH_member, 20, 76
       EMWriteScreen "01", 20, 79
       transmit
-      EMReadScreen OTHR_total, 1, 2, 78
+      EMReadScreen OTHR_total, 2, 2, 78
+	  OTHR_total = trim(OTHR_total)
       If OTHR_total <> 0 then
         variable_written_to = variable_written_to & "Member " & HH_member & "- "
         Do
           call add_OTHR_to_variable(variable_written_to)
-          EMReadScreen OTHR_panel_current, 1, 2, 73
+          EMReadScreen OTHR_panel_current, 2, 2, 72
+		  OTHR_panel_current = trim(OTHR_panel_current)
           If cint(OTHR_panel_current) < cint(OTHR_total) then transmit
         Loop until cint(OTHR_panel_current) = cint(OTHR_total)
       End if
@@ -1311,12 +1317,14 @@ Function autofill_editbox_from_MAXIS(HH_member_array, panel_read_from, variable_
       EMWriteScreen HH_member, 20, 76
       EMWriteScreen "01", 20, 79
       transmit
-      EMReadScreen REST_total, 1, 2, 78
+      EMReadScreen REST_total, 2, 2, 78
+	  REST_total = trim(REST_total)
       If REST_total <> 0 then
         variable_written_to = variable_written_to & "Member " & HH_member & "- "
         Do
           call add_REST_to_variable(variable_written_to)
-          EMReadScreen REST_panel_current, 1, 2, 73
+          EMReadScreen REST_panel_current, 2, 2, 72
+		  REST_panel_current = trim(REST_panel_current)
           If cint(REST_panel_current) < cint(REST_total) then transmit
         Loop until cint(REST_panel_current) = cint(REST_total)
       End if
@@ -1359,12 +1367,14 @@ Function autofill_editbox_from_MAXIS(HH_member_array, panel_read_from, variable_
       EMWriteScreen HH_member, 20, 76
       EMWriteScreen "01", 20, 79
       transmit
-      EMReadScreen SECU_total, 1, 2, 78
+      EMReadScreen SECU_total, 2, 2, 78
+	  SECU_total = trim(SECU_total)
       If SECU_total <> 0 then
         variable_written_to = variable_written_to & "Member " & HH_member & "- "
         Do
           call add_SECU_to_variable(variable_written_to)
-          EMReadScreen SECU_panel_current, 1, 2, 73
+          EMReadScreen SECU_panel_current, 2, 2, 72
+		  SECU_panel_current = trim(SECU_panel_current)
           If cint(SECU_panel_current) < cint(SECU_total) then transmit
         Loop until cint(SECU_panel_current) = cint(SECU_total)
       End if
@@ -5573,6 +5583,9 @@ FUNCTION write_panel_to_MAXIS_UNEA(unea_number, unea_inc_type, unea_inc_verif, u
 		transmit
 		transmit
 	END IF
+	Transmit
+  	EMReadScreen warning_check, 7, 24, 2 'This checks for an error with COLA field being blank
+  	IF warning_check = "WARNING" THEN transmit
 END FUNCTION
 
 FUNCTION write_panel_to_MAXIS_WKEX(program, fed_tax_retro, fed_tax_prosp, fed_tax_verif, state_tax_retro, state_tax_prosp, state_tax_verif, fica_retro, fica_prosp, fica_verif, tran_retro, tran_prosp, tran_verif, tran_imp_rel, meals_retro, meals_prosp, meals_verif, meals_imp_rel, uniforms_retro, uniforms_prosp, uniforms_verif, uniforms_imp_rel, tools_retro, tools_prosp, tools_verif, tools_imp_rel, dues_retro, dues_prosp, dues_verif, dues_imp_rel, othr_retro, othr_prosp, othr_verif, othr_imp_rel, HC_Exp_Fed_Tax, HC_Exp_State_Tax, HC_Exp_FICA, HC_Exp_Tran, HC_Exp_Tran_imp_rel, HC_Exp_Meals, HC_Exp_Meals_Imp_Rel, HC_Exp_Uniforms, HC_Exp_Uniforms_Imp_Rel, HC_Exp_Tools, HC_Exp_Tools_Imp_Rel, HC_Exp_Dues, HC_Exp_Dues_Imp_Rel, HC_Exp_Othr, HC_Exp_Othr_Imp_Rel)
