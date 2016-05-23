@@ -2431,9 +2431,15 @@ FUNCTION MAXIS_footer_finder(MAXIS_footer_month, MAXIS_footer_year)'Grabbing the
 		EMReadScreen MAXIS_footer_month, 2, 20, 43
 		EMReadScreen MAXIS_footer_year, 2, 20, 46
 	ELSE
-		Call find_variable("Month: ", MAXIS_footer, 5)
-		MAXIS_footer_month = left(MAXIS_footer, 2)
-		MAXIS_footer_year = right(MAXIS_footer, 2)
+		EMReadScreen MEMO_check, 4, 2, 47
+		IF MEMO_check = "MEMO" Then	
+			EMReadScreen MAXIS_footer_month, 2, 19, 54
+			EMReadScreen MAXIS_footer_year, 2, 49, 57
+		ELSE
+			Call find_variable("Month: ", MAXIS_footer, 5)
+			MAXIS_footer_month = left(MAXIS_footer, 2)
+			MAXIS_footer_year = right(MAXIS_footer, 2)
+		END IF
 	End if
 END FUNCTION
 
