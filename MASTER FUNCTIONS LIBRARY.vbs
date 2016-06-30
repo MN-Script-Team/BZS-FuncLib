@@ -2035,7 +2035,7 @@ Function dynamic_calendar_dialog(selected_dates_array, month_to_use, text_prompt
 		IF one_date_only = TRUE THEN										'if only one date is allowed to be selected the script will act one way. Else it will allow for an large array of dates from a month to be build.
 			DO
 				selected_dates_array = ""									' declaring array at start of do loop. 
-				Dialog dialog1
+				Dialog dialog
 				cancel_confirmation
 				IF ButtonPressed = prev_month_button THEN month_to_use = dateadd("M", -1, month_to_use)				'changing the month_to_use based on previous or next month
 				IF ButtonPressed = next_month_button THEN month_to_use = dateadd("M", 1, month_to_use)				'this will allow us to get to a new month when the dialog is rebuild.
@@ -2059,7 +2059,7 @@ Function dynamic_calendar_dialog(selected_dates_array, month_to_use, text_prompt
 			IF Ubound(selected_dates_array) <> 0 AND (buttonpressed <> prev_month_button or buttonpressed <> next_month_button) THEN msgbox "Please select just one date."
 			LOOP until Ubound(selected_dates_array) = 0
 		ELSE
-			Dialog dialog1
+			Dialog dialog
 			cancel_confirmation
 			IF ButtonPressed = prev_month_button THEN month_to_use = dateadd("M", -1, month_to_use)					'changing the month_to_use based on previous or next month
 			IF ButtonPressed = next_month_button THEN month_to_use = dateadd("M", 1, month_to_use)					'this will allow us to get to a new month when the dialog is rebuild.
