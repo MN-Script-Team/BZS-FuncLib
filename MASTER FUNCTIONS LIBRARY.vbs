@@ -1994,6 +1994,113 @@ Function create_panel_if_nonexistent()
 	End If
 End Function
 
+Function dynamic_calendar_dialog(selected_dates_array, month_to_use, text_prompt, one_date_only, disable_weekends, start_date, end_date)
+	'Instructions for function
+	' PARAMETERS:
+	' selected_dates_array  - is the output array it will contain dates in MM/DD/YY format
+	' month_to_use          - this can be MM/YY or MM/DD/YY format as long as it is considered a date it will work. 
+	' one_date_only         - this is a True/false parameter which will restrict the function to only allow one date to be selected if set to TRUE
+	' disable_weekends      - this is a True/false parameter which will restrict the selection of weekends if set to TRUE
+	' start_date & end_date - This will provide a range of dates which cannot be selected. These are to be entered as numbers. For example start_date = 3 and end_date = 14 the days 3 through 14 will be unavailable to select
+	
+	'dimming array to display the dates
+	DIM display_dates_array
+	DO
+		full_date_to_display = ""					'resetting variables to make sure loops work properly. 
+		selected_dates_array = ""
+		'Determining the number of days in the calendar month.
+		display_month = DatePart("M", month_to_use) & "/01/" & DatePart("YYYY", month_to_use)			'Converts whatever the month_to_use variable is to a MM/01/YYYY format
+		num_of_days = DatePart("D", (DateAdd("D", -1, (DateAdd("M", 1, display_month)))))								'Determines the number of days in a month by using DatePart to get the day of the last day of the month, and just using the day variable gives us a total
+	
+		'Redeclares the available dates array to be sized appropriately (with the right amount of dates) and another dimension for whether-or-not it was selected
+		Redim display_dates_array(num_of_days, 0)
+
+	
+		'Actually displays the dialog
+		BeginDialog dialog1, 0, 0, 280, 190, "Select Date(s)"
+			Text 5, 10, 265, 50, text_prompt
+			'This next part`creates a line showing the month displayed"
+			Text 120, 70, 55, 10, (MonthName(DatePart("M", display_month)) & " " & DatePart("YYYY", display_month))
+	
+			'Defining the vertical position starting point for the for...next which displays dates in the dialog
+			vertical_position = 85
+			'This for...next displays dates in the dialog, and has checkboxes for available dates (defined in-code as dates before the 8th)
+			for day_to_display = 1 to num_of_days																						'From first day of month to last day of month...
+				full_date_to_display = (DatePart("M", display_month) & "/" & day_to_display & "/" & DatePart("YYYY", display_month))		'Determines the full date to display in the dialog. It needs the full date to determine the day-of-week (we obviously don't want weekends)
+				horizontal_position = 15 + (40 * (WeekDay(full_date_to_display) - 1))													'horizontal position of this is the weekday numeric value (1-7) * 40, minus 1, and plus 15 pixels
+				IF WeekDay(full_date_to_display) = vbSunday AND day_to_display <> 1 THEN vertical_position = vertical_position + 15		'If the day of the week isn't Sunday and the day isn't first of the month, kick the vertical position up another 15 pixels
+	
+				'This blocks out anything that's an unavailable date, currently defined as any date before the 8th. Other dates display as a checkbox.
+				IF day_to_display < end_date AND day_to_display > start_date THEN
+					Text horizontal_position, vertical_position, 30, 10, " X " & day_to_display
+					display_dates_array(day_to_display, 0) = unchecked 'unchecking so selections cannot be made the range between start_date and end_date
+				ELSE
+					IF (disable_weekends = TRUE AND WeekDay(full_date_to_display) = vbSunday) OR (disable_weekends = TRUE AND WeekDay(full_date_to_display) = vbSaturday) THEN		'If the weekends are disabled this will change them to text rather than checkboxes	
+						Text horizontal_position, vertical_position, 30, 10, " X " & day_to_display
+					ELSE
+						CheckBox horizontal_position, vertical_position, 35, 10, day_to_display, display_dates_array(day_to_display, 0)
+					END IF
+				END IF
+			NEXT
+			ButtonGroup ButtonPressed
+			OkButton 175, 170, 50, 15
+			CancelButton 225, 170, 50, 15
+			PushButton 85, 65, 20, 15, "<", prev_month_button					
+			PushButton 180, 65, 20, 15, ">", next_month_button
+		EndDialog
+	
+		IF one_date_only = TRUE THEN										'if only one date is allowed to be selected the script will act one way. Else it will allow for an large array of dates from a month to be build.
+			DO
+				selected_dates_array = ""									' declaring array at start of do loop. 
+				Dialog dialog
+				cancel_confirmation
+				IF ButtonPressed = prev_month_button THEN month_to_use = dateadd("M", -1, month_to_use)				'changing the month_to_use based on previous or next month
+				IF ButtonPressed = next_month_button THEN month_to_use = dateadd("M", 1, month_to_use)				'this will allow us to get to a new month when the dialog is rebuild.
+				FOR i = 0 to num_of_days																			'checking each checkbox in the array to see what dates were selected. 
+					IF display_dates_array(i, 0) = 1 THEN 															'if the date has been checked
+						IF len(DatePart("M", month_to_use)) = 1 THEN												'adding a leading 0 to the month if needed
+							output_month = "0" & DatePart("M", month_to_use)
+						ELSE
+							output_month =  DatePart("M", month_to_use)
+						END IF
+						IF len(i) = 1 THEN 																			'building the output array with dates in MM/DD/YY format
+							selected_dates_array = selected_dates_array & output_month & "/0" & i & "/" & right(DatePart("YYYY", month_to_use), 2) & ";" 
+						ELSE 
+							selected_dates_array = selected_dates_array & output_month & "/" & i & "/" & right(DatePart("YYYY", month_to_use), 2) & ";"
+						END IF
+					END IF
+				NEXT
+				selected_dates_array = selected_dates_array & "end"						'this will allow us to delete the extra entry in the array
+				selected_dates_array = replace(selected_dates_array, ";end", "")
+				selected_dates_array = Split(selected_dates_array, ";")					'splitting array
+			IF Ubound(selected_dates_array) <> 0 AND (buttonpressed <> prev_month_button or buttonpressed <> next_month_button) THEN msgbox "Please select just one date."
+			LOOP until Ubound(selected_dates_array) = 0
+		ELSE
+			Dialog dialog
+			cancel_confirmation
+			IF ButtonPressed = prev_month_button THEN month_to_use = dateadd("M", -1, month_to_use)					'changing the month_to_use based on previous or next month
+			IF ButtonPressed = next_month_button THEN month_to_use = dateadd("M", 1, month_to_use)					'this will allow us to get to a new month when the dialog is rebuild.
+			FOR i = 0 to num_of_days																				'checking each checkbox in the array to see what dates were selected. 
+				IF display_dates_array(i, 0) = 1 THEN 																'if the date has been checked
+					IF len(DatePart("M", month_to_use)) = 1 THEN 													'adding a leading 0 to the month if needed
+						output_month = "0" & DatePart("M", month_to_use)
+					ELSE
+						output_month =  DatePart("M", month_to_use)
+					END IF
+					IF len(i) = 1 THEN 																				'building the output array with dates in MM/DD/YY format addding leading 0 to DD if needed. 
+						selected_dates_array = selected_dates_array & output_month & "/0" & i & "/" & right(DatePart("YYYY", month_to_use), 2) & ";" 
+					ELSE 
+						selected_dates_array = selected_dates_array & output_month & "/" & i & "/" & right(DatePart("YYYY", month_to_use), 2) & ";"
+					END IF	
+				END IF
+			NEXT
+			selected_dates_array = selected_dates_array & "end"							'this will allow us to delete the extra entry in the array
+			selected_dates_array = replace(selected_dates_array, ";end", "")
+			selected_dates_array = Split(selected_dates_array, ";")						'splitting array
+		END IF
+	LOOP until buttonpressed = -1								'looping until someone hits the ok button, this makes the previous and next buttons work. 
+END FUNCTION
+
 Function end_excel_and_script
   objExcel.Workbooks.Close
   objExcel.quit
