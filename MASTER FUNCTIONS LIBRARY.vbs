@@ -3600,7 +3600,7 @@ function navigate_to_MAXIS_screen(function_to_go_to, command_to_go_to)
     END IF
     row = 1
     col = 1
-    EMSearch "function: ", row, col
+    EMSearch "Function: ", row, col
     If row <> 0 then
       EMReadScreen MAXIS_function, 4, row, col + 10
       EMReadScreen STAT_note_check, 4, 2, 45
