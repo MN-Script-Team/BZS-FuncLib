@@ -2054,12 +2054,22 @@ end function
 function change_client_name_to_FML(client_name)
 '--- This function changes the format of a participant name. client's name formatted like "Levesseur, Wendy K", and will change it to "Wendy K LeVesseur".
 '~~~~~ client_name: variable used within the script for name to be converted
-'===== Keywords: PRISM, name, change
+'===== Keywords: PRISM, MAXIS, name, change
+
 	client_name = trim(client_name)
 	length = len(client_name)
-	position = InStr(client_name, ", ")
-	last_name = Left(client_name, position-1)
-	first_name = Right(client_name, length-position-1)
+	
+	'Adds handling for names that have no spaces or 1 space
+	If Instr(client_name, ", ") then 
+		position = InStr(client_name, ", ")  
+		first_name = Right(client_name, length-position - 1) 
+	elseif Instr(client_name, ",") then  
+		position = InStr(client_name, ",")                           '
+		first_name = Right(client_name, length-position)
+	END if 
+	last_name = Left(client_name, position - 1)
+	
+	'final formating of the client name
 	client_name = first_name & " " & last_name
 	client_name = lcase(client_name)
 	call fix_case(client_name, 1)
@@ -3489,6 +3499,64 @@ function navigate_to_MAXIS(maxis_mode)
 	END IF
 end function
 
+function navigate_to_MAXIS_screen(function_to_go_to, command_to_go_to)
+'--- This function is to be used to navigate to a specific MAXIS screen
+'~~~~~ function_to_go_to: needs to be MAXIS function like "STAT" or "REPT"
+'~~~~~ command_to_go_to: needs to be MAXIS function like "WREG" or "ACTV"
+'===== Keywords: MAXIS, navigate
+  EMSendKey "<enter>"
+  EMWaitReady 0, 0
+  EMReadScreen MAXIS_check, 5, 1, 39
+  If MAXIS_check = "MAXIS" or MAXIS_check = "AXIS " then
+    EMReadScreen locked_panel, 23, 2, 30
+    IF locked_panel = "Program History Display" then
+	PF3 'Checks to see if on Program History panel - which does not allow the Command line to be updated
+    END IF
+    row = 1
+    col = 1
+    EMSearch "Function: ", row, col
+    If row <> 0 then
+      EMReadScreen MAXIS_function, 4, row, col + 10
+      EMReadScreen STAT_note_check, 4, 2, 45
+      row = 1
+      col = 1
+      EMSearch "Case Nbr: ", row, col
+      EMReadScreen current_case_number, 8, row, col + 10
+      current_case_number = replace(current_case_number, "_", "")
+      current_case_number = trim(current_case_number)
+    End if
+    If current_case_number = MAXIS_case_number and MAXIS_function = ucase(function_to_go_to) and STAT_note_check <> "NOTE" then
+      row = 1
+      col = 1
+      EMSearch "Command: ", row, col
+      EMWriteScreen command_to_go_to, row, col + 9
+      EMSendKey "<enter>"
+      EMWaitReady 0, 0
+    Else
+      Do
+        EMSendKey "<PF3>"
+        EMWaitReady 0, 0
+        EMReadScreen SELF_check, 4, 2, 50
+      Loop until SELF_check = "SELF"
+      EMWriteScreen function_to_go_to, 16, 43
+      EMWriteScreen "________", 18, 43
+      EMWriteScreen MAXIS_case_number, 18, 43
+      EMWriteScreen MAXIS_footer_month, 20, 43
+      EMWriteScreen MAXIS_footer_year, 20, 46
+      EMWriteScreen command_to_go_to, 21, 70
+      EMSendKey "<enter>"
+      EMWaitReady 0, 0
+      EMReadScreen abended_check, 7, 9, 27
+      If abended_check = "abended" then
+        EMSendKey "<enter>"
+        EMWaitReady 0, 0
+      End if
+	  EMReadScreen ERRR_check, 4, 2, 52			'Checking for the ERRR screen
+	  If ERRR_check = "ERRR" then transmit		'If the ERRR screen is found, it transmits
+    End if
+  End if
+end function
+
 function navigate_to_MMIS()
 '--- This function is to be used when navigating to MMIS from another function in BlueZone (MAXIS, PRISM, INFOPAC, etc.)
 '===== Keywords: MMIS, navigate
@@ -3585,64 +3653,6 @@ function navigate_to_MMIS()
 	transmit
 end function
 
-function navigate_to_MAXIS_screen(function_to_go_to, command_to_go_to)
-'--- This function is to be used to navigate to a specific MAXIS screen
-'~~~~~ function_to_go_to: needs to be MAXIS function like "STAT" or "REPT"
-'~~~~~ command_to_go_to: needs to be MAXIS function like "WREG" or "ACTV"
-'===== Keywords: MAXIS, navigate
-  EMSendKey "<enter>"
-  EMWaitReady 0, 0
-  EMReadScreen MAXIS_check, 5, 1, 39
-  If MAXIS_check = "MAXIS" or MAXIS_check = "AXIS " then
-    EMReadScreen locked_panel, 23, 2, 30
-    IF locked_panel = "Program History Display" then
-	PF3 'Checks to see if on Program History panel - which does not allow the Command line to be updated
-    END IF
-    row = 1
-    col = 1
-    EMSearch "function: ", row, col
-    If row <> 0 then
-      EMReadScreen MAXIS_function, 4, row, col + 10
-      EMReadScreen STAT_note_check, 4, 2, 45
-      row = 1
-      col = 1
-      EMSearch "Case Nbr: ", row, col
-      EMReadScreen current_case_number, 8, row, col + 10
-      current_case_number = replace(current_case_number, "_", "")
-      current_case_number = trim(current_case_number)
-    End if
-    If current_case_number = MAXIS_case_number and MAXIS_function = ucase(function_to_go_to) and STAT_note_check <> "NOTE" then
-      row = 1
-      col = 1
-      EMSearch "Command: ", row, col
-      EMWriteScreen command_to_go_to, row, col + 9
-      EMSendKey "<enter>"
-      EMWaitReady 0, 0
-    Else
-      Do
-        EMSendKey "<PF3>"
-        EMWaitReady 0, 0
-        EMReadScreen SELF_check, 4, 2, 50
-      Loop until SELF_check = "SELF"
-      EMWriteScreen function_to_go_to, 16, 43
-      EMWriteScreen "________", 18, 43
-      EMWriteScreen MAXIS_case_number, 18, 43
-      EMWriteScreen MAXIS_footer_month, 20, 43
-      EMWriteScreen MAXIS_footer_year, 20, 46
-      EMWriteScreen command_to_go_to, 21, 70
-      EMSendKey "<enter>"
-      EMWaitReady 0, 0
-      EMReadScreen abended_check, 7, 9, 27
-      If abended_check = "abended" then
-        EMSendKey "<enter>"
-        EMWaitReady 0, 0
-      End if
-	  EMReadScreen ERRR_check, 4, 2, 52			'Checking for the ERRR screen
-	  If ERRR_check = "ERRR" then transmit		'If the ERRR screen is found, it transmits
-    End if
-  End if
-end function
-
 function navigate_to_PRISM_screen(x) 
 '--- This function is to be used to navigate to a specific PRISM screen
 '~~~~~ x: name of the PRISM screen
@@ -3650,17 +3660,6 @@ function navigate_to_PRISM_screen(x)
   EMWriteScreen x, 21, 18
   EMSendKey "<enter>"
   EMWaitReady 0, 0
-end function
-
-function new_page_check()
-
-  EMGetCursor MAXIS_row, MAXIS_col
-  If MAXIS_row = 17 then
-    EMSendKey ">>>>MORE>>>>"
-    EMSendKey "<PF8>"
-    EMWaitReady 0, 0
-    MAXIS_row = 4
-  End if
 end function
 
 function open_URL_in_browser(URL_to_open)
@@ -3860,23 +3859,36 @@ function PRISM_case_number_finder(variable_for_PRISM_case_number)
 	If isnumeric(left(variable_for_PRISM_case_number, 10)) = False or isnumeric(right(variable_for_PRISM_case_number, 2)) = False then variable_for_PRISM_case_number = ""
 end function
 
-function PRISM_case_number_validation(case_number_to_validate, outcome)
+FUNCTION PRISM_case_number_validation(case_number_to_validate, outcome)
 '--- This function finds the PRISM case number if listed on a PRISM screen
 '~~~~~ case_number_to_validate: needs to be 'PRISM_case_number'
 '~~~~~ outcome: needs to be 'outcome'
 '===== Keywords: PRISM, case number
-  If len(case_number_to_validate) <> 13 then
+case_number_to_validate = trim(case_number_to_validate)													'remove any spaces from the beginning or end of the case #
+  IF Len(case_number_to_validate) <> 13 THEN 																		'if the case # is not 13 characters, it's not a valid case #
     outcome = False
-  Elseif isnumeric(left(case_number_to_validate, 10)) = False then
+	ELSEIF IsNumeric(Left(case_number_to_validate, 10)) = False THEN 							'if the first 10 digits of the case # are not numeric, it's not a valid case #
     outcome = False
-  Elseif isnumeric(right(case_number_to_validate, 2)) = False then
+	ELSEIF IsNumeric(Right(case_number_to_validate, 2)) = False THEN 							'if the last 2 digits of the case # are not numeric, it's not a valid case #
     outcome = False
-  Elseif InStr(11, case_number_to_validate, "-") <> 11 then
-    outcome = False
-  Else
+	ELSEIF IsNumeric(Mid(case_number_to_validate, 11, 1)) = True THEN 						'if the 11th char is a number, it's not a valid case #
+		outcome = False
+	ELSEIF IsNumeric(Mid(case_number_to_validate, 11, 1)) = False THEN 						'if the 11th char is not a number, then...
+		IF Mid(case_number_to_validate, 11, 1) = "." THEN														'if the 11th char is a period, it's a valid case #, and replace the period with a dash
+			case_number_to_validate = Replace(case_number_to_validate, ".", "-")
+			outcome = True
+		ELSEIF Mid(case_number_to_validate, 11, 1) = " " THEN												'if the 11th char is a space, it's a valid case #, and replace the space with a dash
+			case_number_to_validate = Replace(case_number_to_validate, " ", "-")
+			outcome = True
+		ELSEIF Mid(case_number_to_validate, 11, 1) = "-" THEN												'if the 11th char is a dash, it's a valid case #
+			outcome = True
+		ELSE																																				'if the 11th char is a non-numeric char but is not a period, space, or dash, it's not a valid case #
+			outcome = False
+		END IF
+	ELSE																																					'if we haven't determined if it's a valid case # or not yet, it's a valid case #
     outcome = True
-  End if
-end function
+  END IF
+END FUNCTION
 
 function proceed_confirmation(result_of_msgbox)
 '--- This function asks the user if they want to proceed.
@@ -4617,13 +4629,13 @@ function write_three_columns_in_CASE_NOTE(col_01_start_point, col_01_variable, c
   End if
 end function
 
-function write_value_and_transmit(input_value, MAXIS_row, MAXIS_col)
+function write_value_and_transmit(input_value, row, col)
 '--- This function writes a specific value and transmits.
 '~~~~~ input_value: information to be entered 
-'~~~~~ MAXIS_row: row to write the input_value
-'~~~~~ MAXIS_col: column to write the input_value
-'===== Keywords: MAXIS, case note, three columns, format
-	EMWriteScreen input_value, MAXIS_row, MAXIS_col
+'~~~~~ row: row to write the input_value
+'~~~~~ col: column to write the input_value
+'===== Keywords: MAXIS, PRISM, case note, three columns, format
+	EMWriteScreen input_value, row, col
 	transmit
 end function
 
