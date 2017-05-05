@@ -3918,7 +3918,7 @@ function run_another_script(script_path)
   Set fso_command = run_another_script_fso.OpenTextFile(script_path)
   text_from_the_other_script = fso_command.ReadAll
   fso_command.Close
-  Execute text_from_the_other_script
+  ExecuteGlobal text_from_the_other_script
 end function
 
 function run_from_GitHub(url)
@@ -3943,7 +3943,7 @@ function run_from_GitHub(url)
 			FOR EACH phrase IN list_of_things_to_remove
 				script_contents = replace(script_contents, phrase, "")
 			NEXT
-			Execute script_contents									'Executes the remaining script code
+			ExecuteGlobal script_contents							'Executes the remaining script code
 		ELSE														'Error message, tells user to try to reach github.com, otherwise instructs to contact Veronica with details (and stops script).
 			critical_error_msgbox = MsgBox ("Something has gone wrong. The code stored on GitHub was not able to be reached." & vbNewLine & vbNewLine &_
 											"The script has stopped. Please check your Internet connection. Consult a scripts administrator with any questions.", _
