@@ -3653,14 +3653,42 @@ function navigate_to_MMIS()
 	transmit
 end function
 
-function navigate_to_PRISM_screen(x) 
-'--- This function is to be used to navigate to a specific PRISM screen
+FUNCTION navigate_to_PRISM_screen(x) 
+'--- This function is to be used to navigate to a specific PRISM screen.
+'--- If the user is PF1'd into a PRISM submenu, PRISM will not allow data to be entered into the direct command line, so scripts will not be able to navigate to a new PRISM screen until we PF3 out of the submenu.
+'--- To account for this, this function attempts to navigate to CAAD (or CAST if the user was already on CAAD), then reads the PRISM screen code in the lower-right corner of PRISM.
+'--- If the PRISM screen code changed to CAAD (or CAST), the script assumes the user was not in a submenu and is okay to proceed with navigating to 'x' PRISM screen.
+'--- If the PRISM screen code did not change to CAAD (or CAST), the user was likely in a submenu, so the script PF3's, loops, and tries again, until the PRISM screen code changes to CAAD (or CAST).
 '~~~~~ x: name of the PRISM screen
 '===== Keywords: PRISM, navigate
-  EMWriteScreen x, 21, 18
-  EMSendKey "<enter>"
-  EMWaitReady 0, 0
-end function
+	DO
+		EMReadscreen PRISM_screen_code, 5, 21, 74				'Some PRISM screen codes start at col 74 and some start at col 75, so read 5 characters starting at row 21/col 74
+		PRISM_screen_code = trim(PRISM_screen_code)
+		IF PRISM_screen_code = "CAAD" THEN							'PRISM screen code is CAAD, so try to navigate to CAST
+			EMWriteScreen "CAST", 21, 18
+			transmit
+			EMReadscreen PRISM_screen_code, 4, 21, 75
+			IF PRISM_screen_code = "CAST" THEN						'PRISM successfuly navigated to CAST, so script will exit the loop so it can navigate to the 'x' PRISM screen
+				EXIT DO
+			ELSE																					'PRISM did not navigate from CAAD to CAST, so PRISM may be in a submenu; PF3 & loop again
+				PF3
+			END IF
+		ELSEIF PRISM_screen_code = "" THEN							'PRISM screen code is blank, so user may be in a submenu that covers the PRISM screen code; PF3 & loop again
+			PF3
+		ELSE 																						'PRISM screen code is not CAAD and not blank, so try to navigate to CAAD
+			EMWriteScreen "CAAD", 21, 18
+			transmit
+			EMReadscreen PRISM_screen_code, 4, 21, 75
+			IF PRISM_screen_code = "CAAD" THEN						'PRISM successfuly navigated to CAAD, so script will exit the loop so it can navigate to the 'x' PRISM screen
+				EXIT DO
+			ELSE																					'PRISM did not navigate to CAAD, so PRISM may be in a submenu; PF3 & loop again'
+				PF3
+			END IF
+		END IF
+	LOOP
+	EMWriteScreen x, 21, 18
+	transmit
+END FUNCTION
 
 function open_URL_in_browser(URL_to_open)
 '--- This function is to be used to open a URL in user's default browser
