@@ -2515,7 +2515,7 @@ function create_MAXIS_friendly_phone_number(phone_number_variable, screen_row, s
 	EMWriteScreen right(phone_number_variable, 4), screen_row, screen_col + 12	'writes in right 4 digits of the phone number in variable
 end function
 
-FUNCTION create_outlook_appointment(appt_date, appt_start_time, appt_end_time, appt_subject, appt_body, appt_location, appt_reminder, appt_category)
+FUNCTION create_outlook_appointment(appt_date, appt_start_time, appt_end_time, appt_subject, appt_body, appt_location, appt_reminder, reminder_in_minutes, appt_category)
 '--- This function creates a an outlook appointment
 '~~~~~ (appt_date): date of the appointment
 '~~~~~ (appt_start_time): start time of the appointment - format example: "08:00 AM"
@@ -2524,6 +2524,7 @@ FUNCTION create_outlook_appointment(appt_date, appt_start_time, appt_end_time, a
 '~~~~~ (appt_body): body of the email in quotations or a variable
 '~~~~~ (appt_location): name of location in quotations or a variable
 '~~~~~ (appt_reminder): reminder for appointment. Set to TRUE or FALSE 
+'~~~~~ (reminder_in_minutes): enter the number of minutes prior to the appointment to set the reminder. Set as 0 if at the time of the appoint. Set to "" if appt_reminder is set to FALSE
 '~~~~~ (appt_category): can be left "" or assgin to the set the name of the category in quotations
 '===== Keywords: MAXIS, PRISM, create, outlook, appointment
 
@@ -2545,8 +2546,8 @@ FUNCTION create_outlook_appointment(appt_date, appt_start_time, appt_end_time, a
 	If appt_reminder = FALSE then									'If the reminder parameter is false, it skips the reminder, otherwise it sets it to match the number here.
 		objAppointment.ReminderSet = False
 	Else
-		objAppointment.ReminderMinutesBeforeStart = appt_reminder
 		objAppointment.ReminderSet = True
+		objAppointment.ReminderMinutesBeforeStart = reminder_in_minutes
 	End if
 	objAppointment.Categories = appt_category						'Defines a category
 	objAppointment.Save												'Saves the appointment
