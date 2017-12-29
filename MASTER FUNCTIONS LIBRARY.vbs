@@ -2515,7 +2515,7 @@ function create_MAXIS_friendly_phone_number(phone_number_variable, screen_row, s
 	EMWriteScreen right(phone_number_variable, 4), screen_row, screen_col + 12	'writes in right 4 digits of the phone number in variable
 end function
 
-FUNCTION create_outlook_appointment(appt_date, appt_start_time, appt_end_time, appt_subject, appt_body, appt_location, appt_reminder, appt_category)
+FUNCTION create_outlook_appointment(appt_date, appt_start_time, appt_end_time, appt_subject, appt_body, appt_location, appt_reminder, reminder_in_minutes, appt_category)
 '--- This function creates a an outlook appointment
 '~~~~~ (appt_date): date of the appointment
 '~~~~~ (appt_start_time): start time of the appointment - format example: "08:00 AM"
@@ -2524,6 +2524,7 @@ FUNCTION create_outlook_appointment(appt_date, appt_start_time, appt_end_time, a
 '~~~~~ (appt_body): body of the email in quotations or a variable
 '~~~~~ (appt_location): name of location in quotations or a variable
 '~~~~~ (appt_reminder): reminder for appointment. Set to TRUE or FALSE 
+'~~~~~ (reminder_in_minutes): enter the number of minutes prior to the appointment to set the reminder. Set as 0 if at the time of the appoint. Set to "" if appt_reminder is set to FALSE
 '~~~~~ (appt_category): can be left "" or assgin to the set the name of the category in quotations
 '===== Keywords: MAXIS, PRISM, create, outlook, appointment
 
@@ -2545,8 +2546,8 @@ FUNCTION create_outlook_appointment(appt_date, appt_start_time, appt_end_time, a
 	If appt_reminder = FALSE then									'If the reminder parameter is false, it skips the reminder, otherwise it sets it to match the number here.
 		objAppointment.ReminderSet = False
 	Else
-		objAppointment.ReminderMinutesBeforeStart = appt_reminder
 		objAppointment.ReminderSet = True
+		objAppointment.ReminderMinutesBeforeStart = reminder_in_minutes
 	End if
 	objAppointment.Categories = appt_category						'Defines a category
 	objAppointment.Save												'Saves the appointment
@@ -3918,7 +3919,7 @@ function run_another_script(script_path)
   Set fso_command = run_another_script_fso.OpenTextFile(script_path)
   text_from_the_other_script = fso_command.ReadAll
   fso_command.Close
-  Execute text_from_the_other_script
+  ExecuteGlobal text_from_the_other_script
 end function
 
 function run_from_GitHub(url)
@@ -3943,7 +3944,7 @@ function run_from_GitHub(url)
 			FOR EACH phrase IN list_of_things_to_remove
 				script_contents = replace(script_contents, phrase, "")
 			NEXT
-			Execute script_contents									'Executes the remaining script code
+			ExecuteGlobal script_contents							'Executes the remaining script code
 		ELSE														'Error message, tells user to try to reach github.com, otherwise instructs to contact Veronica with details (and stops script).
 			critical_error_msgbox = MsgBox ("Something has gone wrong. The code stored on GitHub was not able to be reached." & vbNewLine & vbNewLine &_
 											"The script has stopped. Please check your Internet connection. Consult a scripts administrator with any questions.", _
@@ -4092,6 +4093,43 @@ function start_a_blank_CASE_NOTE()
 		EMReadScreen mode_check, 1, 20, 09
 		If case_note_check <> "Case Notes (NOTE)" or mode_check <> "A" then msgbox "The script can't open a case note. Reasons may include:" & vbnewline & vbnewline & "* You may be in inquiry" & vbnewline & "* You may not have authorization to case note this case (e.g.: out-of-county case)" & vbnewline & vbnewline & "Check MAXIS and/or navigate to CASE/NOTE, and try again. You can press the STOP SCRIPT button on the power pad to stop the script."
 	Loop until (mode_check = "A" or mode_check = "E")
+end function
+
+function start_a_new_spec_memo()
+'--- This function navigates user to SPEC/MEMO and starts a new SPEC/MEMO, selecting client, AREP, and SWKR if appropriate
+'===== Keywords: MAXIS, notice, navigate, edit
+	call navigate_to_MAXIS_screen("SPEC", "MEMO")				'Navigating to SPEC/MEMO
+
+	PF5															'Creates a new MEMO. If it's unable the script will stop.
+	EMReadScreen memo_display_check, 12, 2, 33
+	If memo_display_check = "Memo Display" then script_end_procedure("You are not able to go into update mode. Did you enter in inquiry by mistake? Please try again in production.")
+
+	'Checking for an AREP. If there's an AREP it'll navigate to STAT/AREP, check to see if the forms go to the AREP. If they do, it'll write X's in those fields below.
+	row = 4                             'Defining row and col for the search feature.
+	col = 1
+	EMSearch "ALTREP", row, col         'Row and col are variables which change from their above declarations if "ALTREP" string is found.
+	IF row > 4 THEN                     'If it isn't 4, that means it was found.
+	    arep_row = row                                          'Logs the row it found the ALTREP string as arep_row
+	    call navigate_to_MAXIS_screen("STAT", "AREP")           'Navigates to STAT/AREP to check and see if forms go to the AREP
+	    EMReadscreen forms_to_arep, 1, 10, 45                   'Reads for the "Forms to AREP?" Y/N response on the panel.
+	    call navigate_to_MAXIS_screen("SPEC", "MEMO")           'Navigates back to SPEC/MEMO
+	    PF5                                                     'PF5s again to initiate the new memo process
+	END IF
+	'Checking for SWKR
+	row = 4                             'Defining row and col for the search feature.
+	col = 1
+	EMSearch "SOCWKR", row, col         'Row and col are variables which change from their above declarations if "SOCWKR" string is found.
+	IF row > 4 THEN                     'If it isn't 4, that means it was found.
+	    swkr_row = row                                          'Logs the row it found the SOCWKR string as swkr_row
+	    call navigate_to_MAXIS_screen("STAT", "SWKR")         'Navigates to STAT/SWKR to check and see if forms go to the SWKR
+	    EMReadscreen forms_to_swkr, 1, 15, 63                'Reads for the "Forms to SWKR?" Y/N response on the panel.
+	    call navigate_to_MAXIS_screen("SPEC", "MEMO")         'Navigates back to SPEC/MEMO
+	    PF5                                           'PF5s again to initiate the new memo process
+	END IF
+	EMWriteScreen "x", 5, 12                                        'Initiates new memo to client
+	IF forms_to_arep = "Y" THEN EMWriteScreen "x", arep_row, 12     'If forms_to_arep was "Y" (see above) it puts an X on the row ALTREP was found.
+	IF forms_to_swkr = "Y" THEN EMWriteScreen "x", swkr_row, 12     'If forms_to_arep was "Y" (see above) it puts an X on the row ALTREP was found.
+	transmit                                                        'Transmits to start the memo writing process
 end function
 
 function transmit()
