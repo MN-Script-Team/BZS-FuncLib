@@ -4016,6 +4016,10 @@ function script_end_procedure(closing_message)
 		'Closing the connection
 		objConnection.Close
 	End if
+	
+	'Hennepin County specific code. If using_ESSO is TRUE, open ESSO. using_ESSO is null by default. using_ESSO is set to true only in Hennepin's global variables file if the user has ESSO installed.
+	IF using_ESSO = TRUE THEN objShell.Run """C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Oracle\ESSO-LM\ESSO-LM.lnk"""
+	
 	If disable_StopScript = FALSE or disable_StopScript = "" then stopscript
 end function
 
